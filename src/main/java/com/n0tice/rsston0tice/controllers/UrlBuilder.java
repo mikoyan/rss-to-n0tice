@@ -21,4 +21,12 @@ public class UrlBuilder {
 		return prefix + "/logout";
 	}
 
+	public String getNewFeedUrl() {
+		return prefix + "/feeds/new";
+	}
+	
+	public String getFeedUrl(int i) {
+		return prefix + "/feeds/" + i;
+	}
+	
 }

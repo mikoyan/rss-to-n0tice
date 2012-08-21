@@ -7,3 +7,21 @@
 	<a href="$urlBuilder.loginUrl">Login</a>
 #end
 </p>
+
+#if ($loggedInUsername)
+
+	#if($feeds && $feeds.size() > 0) 
+		<p>Your feeds:<p>
+		<ul>
+		#foreach ($feed in $feeds)
+			<li><a href="$urlBuilder.getFeedUrl($velocityCount)">$escape.html($feed.url)</li>
+		#end
+		</ul>
+	
+	#else
+		<p>You have no feeds setup for import into n0tice.</p>
+	#end
+	
+	<p><a href="$urlBuilder.newFeedUrl">Add a new feed</a>
+
+#end

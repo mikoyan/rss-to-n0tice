@@ -1,0 +1,11 @@
+<h4>RSS to n0tice</h4>
+ 
+<p>
+#if ($loggedInUsername) 
+	Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
+#else
+	<a href="$urlBuilder.loginUrl">Login</a>
+#end
+</p>
+
+<h5>Feed: $escape.html($feed.url)</h5>

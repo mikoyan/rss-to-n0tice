@@ -1,0 +1,22 @@
+<h4>RSS to n0tice</h4>
+ 
+<p>
+#if ($loggedInUsername) 
+	Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
+#else
+	<a href="$urlBuilder.loginUrl">Login</a>
+#end
+</p>
+
+<h5>New feed</h5>
+
+<form action="$urlBuilder.newFeedUrl" method="POST">
+
+  	#springBind( "feed.url" )
+	Url: <input name="${status.expression}" value="$!status.value" />	
+	<br/>
+	#foreach($error in $status.errorMessages) <b>$error</b> <br> #end
+			
+	<input type="submit" value="Add new feed" />
+	
+<form>
