@@ -9,3 +9,19 @@
 </p>
 
 <h5>Feed: $escape.html($feed.url)</h5>
+
+#if($feeditems && $feeditems.size() > 0) 
+	<p>Feed items:<p>
+	<ul>
+	#foreach ($feeditem in $feeditems)
+		<li>$feeditem.title
+			#if ($feeditem.geoTagged) 
+				<br />$feeditem.latitude - $feeditem.longitude
+			#end
+		</li>
+	#end
+	</ul>
+		
+#else
+	<p>No feed items could be loaded from this feed.</p>
+#end

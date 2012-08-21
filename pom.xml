@@ -73,7 +73,34 @@
 			<artifactId>hibernate-validator-annotation-processor</artifactId>
 			<version>4.1.0.Final</version>
 		</dependency>
-		
+	
+		<dependency>
+			<groupId>net.java.dev.rome</groupId>
+			<artifactId>rome</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>net.java.dev.rome</groupId>
+			<artifactId>rome-fetcher</artifactId>
+			<version>1.0.0</version>
+			<type>jar</type>
+			<scope>compile</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.geonames</groupId>
+			<artifactId>georss-rome</artifactId>
+			<version>0.9.8</version>	
+			<exclusions>
+				<exclusion>
+					<groupId>rome</groupId>
+					<artifactId>rome</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+				
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>

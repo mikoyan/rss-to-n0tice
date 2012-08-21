@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import com.n0tice.rsston0tice.daos.FeedDAO;
+import com.n0tice.rsston0tice.feeds.FeedFetcher;
 import com.n0tice.rsston0tice.model.Feed;
 import com.n0tice.rsston0tice.model.forms.NewFeedForm;
 
@@ -22,12 +23,14 @@ public class FeedsController {
 	private LoggedInUserFilter loggedInUserFilter;
 	private FeedDAO feedDAO;
 	private UrlBuilder urlBuilder;
+	private FeedFetcher feedFetcher;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
+		this.feedFetcher = feedFetcher;
 	}
 	
 	@RequestMapping("/feeds/new")
@@ -56,7 +59,10 @@ public class FeedsController {
 	public ModelAndView newFeed(@PathVariable("id") int id) {
         ModelAndView mv = new ModelAndView("feed");
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());        
-        mv.addObject("feed", feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(id - 1));        
+        
+        final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(id - 1);
+		mv.addObject("feed", feed);
+        mv.addObject("feeditems", feedFetcher.getFeedItems(feed.getUrl()));
         return mv;
     }
 	
