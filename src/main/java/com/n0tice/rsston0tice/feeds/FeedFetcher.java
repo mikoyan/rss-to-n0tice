@@ -19,7 +19,7 @@ import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 @Component
 public class FeedFetcher {
 	
-	private static Logger log = Logger.getLogger(N0ticeOauthSigninHandler.class);
+	private static Logger log = Logger.getLogger(FeedFetcher.class);
 	
 	public List<FeedItem> getFeedItems(String url) {
 		List<FeedItem> feedItems = new ArrayList<FeedItem>();
@@ -39,7 +39,7 @@ public class FeedFetcher {
 			if (geoModule != null && geoModule.getPosition() != null) {
 				latitude = geoModule.getPosition().getLatitude();
 				longitude = geoModule.getPosition().getLongitude();
-				log.info("Rss item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
+				log.debug("Rss item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
 			}
         	
         	feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getDescription().getValue(), syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude));

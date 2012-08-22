@@ -16,6 +16,7 @@ import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.rsston0tice.daos.AccessTokenDAO;
+import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
 import com.n0tice.rsston0tice.model.FeedItem;
 
 @Component
@@ -25,11 +26,13 @@ public class ReportPostService {
 
 	private AccessTokenDAO accessTokenDAO;
 	private N0ticeApiFactory n0ticeApiFactory;
+	private FeedItemHistoryDAO feedItemHistoryDAO;
 	
 	@Autowired
-	public ReportPostService(AccessTokenDAO accessTokenDAO, N0ticeApiFactory n0ticeApiFactory) {
+	public ReportPostService(AccessTokenDAO accessTokenDAO, N0ticeApiFactory n0ticeApiFactory, FeedItemHistoryDAO feedItemHistoryDAO) {
 		this.accessTokenDAO = accessTokenDAO;
 		this.n0ticeApiFactory = n0ticeApiFactory;
+		this.feedItemHistoryDAO = feedItemHistoryDAO;
 	}
 	
 	public void postReports(List<FeedItem> feedItems, String user) {
@@ -38,31 +41,42 @@ public class ReportPostService {
 		
         for (FeedItem feedItem : feedItems) {
 			if (feedItem.isGeoTagged()) {
-				log.info("Importing item: " + feedItem.getTitle());
-				try {
-					n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, null, new DateTime(feedItem.getDate()));
+				
+				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, getGuidFor(feedItem))) {
+					log.info("Importing item: " + feedItem.getTitle());
+					try {
+						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, null, new DateTime(feedItem.getDate()));
+						feedItemHistoryDAO.markAsImported(user, getGuidFor(feedItem));
 					
-				} catch (NotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (ParsingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (AuthorisationException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NotAllowedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (BadRequestException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					} catch (NotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (ParsingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (AuthorisationException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (NotAllowedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (BadRequestException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				
+				} else {
+					log.info("Skipping previously imported item: " + feedItem.getTitle());
 				}
 			}
 		}
+	}
+
+	private String getGuidFor(FeedItem feedItem) {
+		return feedItem.getUri();
 	}
 
 }
