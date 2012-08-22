@@ -21,7 +21,7 @@ public class FeedFetcher {
 	
 	private static Logger log = Logger.getLogger(N0ticeOauthSigninHandler.class);
 	
-	public Object getFeedItems(String url) {
+	public List<FeedItem> getFeedItems(String url) {
 		List<FeedItem> feedItems = new ArrayList<FeedItem>();
     	SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
     	if (syndfeed == null) {
@@ -42,7 +42,7 @@ public class FeedFetcher {
 				log.info("Rss item '" + syndEntry.getTitle() + "' has position information: " + latitude + "," + longitude);
 			}
         	
-        	feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude));
+        	feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), syndEntry.getDescription().getValue(), syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude));
         }
         return feedItems;
 	}

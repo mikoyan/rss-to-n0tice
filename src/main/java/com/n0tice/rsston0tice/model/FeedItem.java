@@ -6,14 +6,16 @@ public class FeedItem {
 
 	private final String title;
 	private final String uri;
+	private final String body;
 	private final String link;
 	private final Date date;
 	private final Double latitude;
 	private final Double longitude;
 
-	public FeedItem(String title, String uri, String link, Date date, Double latitude, Double longitude) {
+	public FeedItem(String title, String uri, String body, String link, Date date, Double latitude, Double longitude) {
 		this.title = title;
 		this.uri = uri;
+		this.body = body;
 		this.link = link;
 		this.date = date;
 		this.latitude = latitude;
@@ -26,6 +28,10 @@ public class FeedItem {
 
 	public String getUri() {
 		return uri;
+	}
+	
+	public String getBody() {
+		return body;
 	}
 
 	public String getLink() {
@@ -50,9 +56,9 @@ public class FeedItem {
 
 	@Override
 	public String toString() {
-		return "FeedItem [title=" + title + ", uri=" + uri + ", link=" + link
-				+ ", date=" + date + ", latitude=" + latitude + ", longitude="
-				+ longitude + "]";
+		return "FeedItem [title=" + title + ", uri=" + uri + ", body=" + body
+				+ ", link=" + link + ", date=" + date + ", latitude="
+				+ latitude + ", longitude=" + longitude + "]";
 	}
 	
 }

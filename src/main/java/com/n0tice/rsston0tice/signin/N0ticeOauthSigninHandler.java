@@ -26,6 +26,8 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
+import com.n0tice.rsston0tice.api.N0ticeApiFactory;
+import com.n0tice.rsston0tice.daos.AccessTokenDAO;
 
 @Component
 public class N0ticeOauthSigninHandler implements SigninHandler {
@@ -34,25 +36,27 @@ public class N0ticeOauthSigninHandler implements SigninHandler {
 	
 	private static final String OAUTH_TOKEN = "oauth_token";
 	private static final String OAUTH_VERIFIER = "oauth_verifier";
+
+	private AccessTokenDAO accessTokenDAO;
+	private N0ticeApiFactory n0ticeApiFactory;
 	
 	private OAuthService oauthService;
 
 	private String apiUrl;
-
-	private String consumerKey;
-	
-	private String consumerSecret;
-	
+	private String consumerKey;	
+	private String consumerSecret;	
 	private String callBackUrl;
 	
 	private Map<String, Token> requestTokens;
 	
 	@Autowired
-	public N0ticeOauthSigninHandler(
+	public N0ticeOauthSigninHandler(AccessTokenDAO accessTokenDAO, N0ticeApiFactory n0ticeApiFactory,
 			@Value(value = "#{rsston0tice['api.url']}") String apiUrl,
 			@Value(value = "#{rsston0tice['consumer.key']}") String consumerKey,
 			@Value(value = "#{rsston0tice['consumer.secret']}") String consumerSecret,
 			@Value(value = "#{rsston0tice['callback.url']}") String callBackUrl) {
+		this.accessTokenDAO = accessTokenDAO;
+		this.n0ticeApiFactory = n0ticeApiFactory;
 		this.apiUrl = apiUrl;
 		this.consumerKey = consumerKey;
 		this.consumerSecret = consumerSecret;
@@ -104,11 +108,13 @@ public class N0ticeOauthSigninHandler implements SigninHandler {
 					requestTokens.remove(requestToken.getToken());
 					
 					log.info("Using access token to lookup user details using the n0tice api");					
-					final N0ticeApi n0ticeApi = new N0ticeApi("http://dev.n0ticeapis.com/2", "testkey", "testsecret", accessToken);	// TODO Shouldn't be using scribe classes on api interface
+					final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(accessToken);
+					
 					try {
 						final User user = n0ticeApi.verify();
 						if (user != null) {
 							log.info("External user is: " + user.getUsername());
+							accessTokenDAO.storeAccessTokenForUser(user.getUsername(), accessToken);
 							return user.getUsername();
 						}
 						
