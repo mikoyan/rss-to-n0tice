@@ -16,7 +16,18 @@
 	Url: <input name="${status.expression}" value="$!status.value" />	
 	<br/>
 	#foreach($error in $status.errorMessages) <b>$error</b> <br> #end
-			
+	
+	#springBind( "feed.noticeboard" )
+	Noticeboard: 
+	<select name="${status.expression}">
+		<option value="" />
+		#if($noticeboards && $noticeboards.size() > 0) 
+			#foreach ($noticeboard in $noticeboards)
+				<option value="$escape.html($noticeboard.domain)" #if($noticeboard.domain == $status.value) SELECTED #end >$escape.html($noticeboard.name)
+			#end
+		#end		
+	</select>
+		
 	<input type="submit" value="Add new feed" />
 	
 <form>

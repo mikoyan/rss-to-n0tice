@@ -35,7 +35,7 @@ public class ReportPostService {
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
 	}
 	
-	public void postReports(List<FeedItem> feedItems, String user) {
+	public void postReports(List<FeedItem> feedItems, String user, String noticeboard) {
 		final Token accessToken = accessTokenDAO.getAccessTokenFor(user);
 		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(accessToken);
 		
@@ -45,7 +45,7 @@ public class ReportPostService {
 				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, getGuidFor(feedItem))) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
-						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, null, new DateTime(feedItem.getDate()));
+						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, noticeboard, new DateTime(feedItem.getDate()));
 						feedItemHistoryDAO.markAsImported(user, getGuidFor(feedItem));
 					
 					} catch (NotFoundException e) {

@@ -14,6 +14,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import com.n0tice.api.client.exceptions.HttpFetchException;
+import com.n0tice.api.client.exceptions.NotFoundException;
+import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.rsston0tice.api.N0ticeApiFactory;
 import com.n0tice.rsston0tice.api.ReportPostService;
 import com.n0tice.rsston0tice.daos.FeedDAO;
 import com.n0tice.rsston0tice.feeds.FeedFetcher;
@@ -29,19 +33,22 @@ public class FeedsController {
 	private UrlBuilder urlBuilder;
 	private FeedFetcher feedFetcher;
 	private ReportPostService reportPostService;
+	private N0ticeApiFactory n0ticeApiFactory;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, ReportPostService reportPostService) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, ReportPostService reportPostService, N0ticeApiFactory n0ticeApiFactory) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
 		this.feedFetcher = feedFetcher;
 		this.reportPostService = reportPostService;
+		this.n0ticeApiFactory = n0ticeApiFactory;
 	}
 	
 	@RequestMapping("/feeds/new")
 	public ModelAndView newFeed(@ModelAttribute("feed") NewFeedForm feedForm) {
         ModelAndView mv = new ModelAndView("newfeed");
+        populateUsersNoticeboardList(mv);
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());
         return mv;
     }
@@ -50,13 +57,15 @@ public class FeedsController {
 	public ModelAndView newconsumerSubmit(@Valid @ModelAttribute("feed") NewFeedForm feedForm, BindingResult result) throws Exception {
 		
 		// TODO duplicate check
-
+		
 		if (!result.hasErrors()) {
-			feedDAO.addNewFeedForUser(loggedInUserFilter.getLoggedInUser(), new Feed(feedForm.getUrl()));			
+			final Feed feed = new Feed(feedForm.getUrl(), feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
+			feedDAO.addNewFeedForUser(loggedInUserFilter.getLoggedInUser(), feed);			
 			return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
 		}
 		
 		final ModelAndView mv = new ModelAndView("newfeed");
+        populateUsersNoticeboardList(mv);
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());
         return mv;
 	}
@@ -81,9 +90,24 @@ public class FeedsController {
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
         List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
  
-        reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser());
+        reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard());
         
 		return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
     }
+	
+	private void populateUsersNoticeboardList(ModelAndView mv) {
+		try {
+			mv.addObject("noticeboards", n0ticeApiFactory.getReadOnlyApi().noticeboards(loggedInUserFilter.getLoggedInUser()));
+		} catch (NotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParsingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (HttpFetchException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 	
 }

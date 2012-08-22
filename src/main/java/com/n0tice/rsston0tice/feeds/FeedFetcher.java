@@ -9,7 +9,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import com.n0tice.rsston0tice.model.FeedItem;
-import com.n0tice.rsston0tice.signin.N0ticeOauthSigninHandler;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.synd.SyndEntry;
