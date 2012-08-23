@@ -1,35 +1,34 @@
 package com.n0tice.rsston0tice.daos;
 
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.net.UnknownHostException;
 import java.util.List;
-import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.google.code.morphia.Datastore;
+import com.google.code.morphia.query.Query;
+import com.mongodb.MongoException;
 import com.n0tice.rsston0tice.model.Feed;
 
 @Component
 public class FeedDAO {
 
-	private Map<String, List<Feed>> userFeeds;
+	private Datastore datastore;
 	
-	public FeedDAO() {
-		userFeeds = new HashMap<String, List<Feed>>();
+	@Autowired
+	public FeedDAO(DataStoreFactory dataStoreFactory) throws UnknownHostException, MongoException {
+		this.datastore = dataStoreFactory.getDatastore();
 	}
 
 	public List<Feed> getFeedsForUser(String username) {
-		return userFeeds.get(username);
+		final Query<Feed> q = datastore.createQuery(Feed.class).
+				field("user").equal(username);
+			return q.asList();		
 	}
 
-	public void addNewFeedForUser(String user, Feed feed) {
-		List<Feed> usersFeeds = userFeeds.get(user);
-		if (usersFeeds == null) {
-			usersFeeds = new ArrayList<Feed>();
-		}
-		
-		usersFeeds.add(feed);
-		userFeeds.put(user, usersFeeds);		
+	public void addNewFeedForUser(Feed feed) {
+		datastore.save(feed);
 	}
 	
 }

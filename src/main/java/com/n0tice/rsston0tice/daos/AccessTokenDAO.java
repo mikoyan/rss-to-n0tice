@@ -1,26 +1,33 @@
 package com.n0tice.rsston0tice.daos;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.net.UnknownHostException;
 
-import org.scribe.model.Token;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.google.code.morphia.Datastore;
+import com.google.code.morphia.query.Query;
+import com.mongodb.MongoException;
+import com.n0tice.rsston0tice.model.UsersAccessToken;
 
 @Component
 public class AccessTokenDAO {
-
-	Map<String, Token> accessTokens;
 	
-	public AccessTokenDAO() {
-		accessTokens = new HashMap<String, Token>();
+	private Datastore datastore;
+	
+	@Autowired
+	public AccessTokenDAO(DataStoreFactory dataStoreFactory) throws UnknownHostException, MongoException {
+		this.datastore = dataStoreFactory.getDatastore();
 	}
 	
-	public void storeAccessTokenForUser(String user, Token accessToken) {
-		accessTokens.put(user, accessToken);		
+	public void storeAccessTokenForUser(UsersAccessToken accessToken) {
+		datastore.save(accessToken);
 	}
-
-	public Token getAccessTokenFor(String user) {
-		return accessTokens.get(user);
+	
+	public UsersAccessToken getAccessTokenFor(String user) {
+		final Query<UsersAccessToken> q = datastore.createQuery(UsersAccessToken.class).
+				field("user").equal(user);
+		return q.get();
 	}
 	
 }

@@ -3,39 +3,42 @@ package com.n0tice.rsston0tice.model;
 import com.google.code.morphia.annotations.Entity;
 import com.google.code.morphia.annotations.Indexed;
 
-@Entity("feeds")
-public class Feed {
-	
+@Entity("feedItemHistory")
+public class FeedItemHistory  {
+
 	@Indexed
 	private String user;
 	
-	private String url;
+	@Indexed
+	private String guid;
+
+	@Indexed
 	private String noticeboard;
 	
-	public Feed() {
+	public FeedItemHistory() {
 	}
 	
-	public Feed(String user, String url, String noticeboard) {
+	public FeedItemHistory(String user, String guid, String noticeboard) {
 		this.user = user;
-		this.url = url;
+		this.guid = guid;
 		this.noticeboard = noticeboard;
 	}
-	
+
 	public String getUser() {
 		return user;
 	}
-	
-	public String getUrl() {
-		return url;
-	}
 
+	public String getGuid() {
+		return guid;
+	}
+	
 	public String getNoticeboard() {
 		return noticeboard;
 	}
 
 	@Override
 	public String toString() {
-		return "Feed [user=" + user + ", url=" + url + ", noticeboard=" + noticeboard + "]";
+		return "FeedItemHistory [user=" + user + ", guid=" + guid + ", noticeboard=" + noticeboard + "]";
 	}
 	
 }

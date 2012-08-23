@@ -28,6 +28,7 @@ import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
 import com.n0tice.rsston0tice.daos.AccessTokenDAO;
+import com.n0tice.rsston0tice.model.UsersAccessToken;
 
 @Component
 public class N0ticeOauthSigninHandler implements SigninHandler {
@@ -114,7 +115,7 @@ public class N0ticeOauthSigninHandler implements SigninHandler {
 						final User user = n0ticeApi.verify();
 						if (user != null) {
 							log.info("External user is: " + user.getUsername());
-							accessTokenDAO.storeAccessTokenForUser(user.getUsername(), accessToken);
+							accessTokenDAO.storeAccessTokenForUser(new UsersAccessToken(user.getUsername(), accessToken.getToken(), accessToken.getSecret()));
 							return user.getUsername();
 						}
 						

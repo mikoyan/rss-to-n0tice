@@ -17,6 +17,7 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.rsston0tice.daos.AccessTokenDAO;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
+import com.n0tice.rsston0tice.model.UsersAccessToken;
 import com.n0tice.rsston0tice.model.FeedItem;
 
 @Component
@@ -36,17 +37,17 @@ public class ReportPostService {
 	}
 	
 	public void postReports(List<FeedItem> feedItems, String user, String noticeboard) {
-		final Token accessToken = accessTokenDAO.getAccessTokenFor(user);
-		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(accessToken);
+		final UsersAccessToken accessToken = accessTokenDAO.getAccessTokenFor(user);
+		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new Token(accessToken.getToken(), accessToken.getSecret()));
 		
         for (FeedItem feedItem : feedItems) {
 			if (feedItem.isGeoTagged()) {
 				
-				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, getGuidFor(feedItem))) {
+				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, getGuidFor(feedItem), noticeboard)) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
 						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, noticeboard, new DateTime(feedItem.getDate()));
-						feedItemHistoryDAO.markAsImported(user, getGuidFor(feedItem));
+						feedItemHistoryDAO.markAsImported(user, getGuidFor(feedItem), noticeboard);
 					
 					} catch (NotFoundException e) {
 						// TODO Auto-generated catch block

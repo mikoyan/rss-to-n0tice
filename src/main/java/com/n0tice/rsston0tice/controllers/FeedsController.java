@@ -59,8 +59,11 @@ public class FeedsController {
 		// TODO duplicate check
 		
 		if (!result.hasErrors()) {
-			final Feed feed = new Feed(feedForm.getUrl(), feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
-			feedDAO.addNewFeedForUser(loggedInUserFilter.getLoggedInUser(), feed);			
+			final Feed feed = new Feed(
+					loggedInUserFilter.getLoggedInUser(),
+					feedForm.getUrl(),
+					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
+			feedDAO.addNewFeedForUser(feed);	
 			return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
 		}
 		
