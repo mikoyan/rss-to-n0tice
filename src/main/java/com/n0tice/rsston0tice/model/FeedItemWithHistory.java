@@ -40,4 +40,12 @@ public class FeedItemWithHistory {
 		return feedItemHistory != null;
 	}
 	
+	public Date getImportDate() {
+		return feedItemHistory != null ? feedItemHistory.getDate() : null;
+	}
+	
+	public String getImportNoticeboard() {
+		return feedItemHistory != null ?feedItemHistory.getNoticeboard() : null;
+	}
+	
 }

@@ -28,11 +28,20 @@
 		#foreach ($feeditem in $feeditems)
 			<li class="feeditem">			
 				$escape.html($feeditem.title)
+								
 				#if ($feeditem.geoTagged) 
 					<br />$feeditem.latitude - $feeditem.longitude
 				#end
+				
 				#if ($feeditem.hasHistory()) 
-					<p>Imported</p>
+					<p>Imported
+					#if($feeditem.importNoticeboard)  
+						to $escape.html($feeditem.importNoticeboard)
+					#end					
+					#if($feeditem.importDate)  
+						on $feeditem.importDate
+					#end
+					</p>
 				#end
 			</li>
 		#end

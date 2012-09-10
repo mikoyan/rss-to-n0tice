@@ -3,6 +3,7 @@ package com.n0tice.rsston0tice.daos;
 import java.net.UnknownHostException;
 import java.util.List;
 
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,7 +23,7 @@ public class FeedItemHistoryDAO {
 	}
 	
 	public void markAsImported(String user, String guid, String noticeboard) {
-		datastore.save(new FeedItemHistory(user, guid, noticeboard));
+		datastore.save(new FeedItemHistory(user, guid, noticeboard, DateTime.now().toDate()));
 	}
 	
 	public boolean hasBeenImportedAlready(String user, String guid, String noticeboard) {
