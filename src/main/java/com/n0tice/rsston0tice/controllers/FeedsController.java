@@ -50,6 +50,10 @@ public class FeedsController {
 	
 	@RequestMapping("/feeds/new")
 	public ModelAndView newFeed(@ModelAttribute("feed") NewFeedForm feedForm) {
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
+		
         ModelAndView mv = new ModelAndView("newfeed");
         populateUsersNoticeboardList(mv);
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());
@@ -58,6 +62,9 @@ public class FeedsController {
 	
 	@RequestMapping(value="/feeds/new", method=RequestMethod.POST)
 	public ModelAndView newconsumerSubmit(@Valid @ModelAttribute("feed") NewFeedForm feedForm, BindingResult result) throws Exception {
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
 		
 		// TODO duplicate check
 		
@@ -68,7 +75,7 @@ public class FeedsController {
 					feedForm.getUrl(),
 					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
 			feedDAO.addNewFeedForUser(feed);	
-			return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
+			return homePageRedirect();
 		}
 		
 		final ModelAndView mv = new ModelAndView("newfeed");
@@ -79,7 +86,11 @@ public class FeedsController {
 	
 	@RequestMapping(value="/feeds/{feedNumber}",  method=RequestMethod.GET)
 	public ModelAndView feedItems(@PathVariable("feedNumber") int feedNumber) {
-        ModelAndView mv = new ModelAndView("feed");
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
+		
+		ModelAndView mv = new ModelAndView("feed");
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());        
         
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
@@ -93,10 +104,14 @@ public class FeedsController {
     }
 	
 	@RequestMapping(value="/feeds/{feedNumber}", method=RequestMethod.POST)
-	public ModelAndView importFeedItems(@PathVariable("feedNumber") int feedNumber) {        
+	public ModelAndView importFeedItems(@PathVariable("feedNumber") int feedNumber) {
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
+		
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
         List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
- 
+        
         final int importedCount = reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard());
         
         ModelAndView mv = new ModelAndView("imported");
@@ -120,6 +135,10 @@ public class FeedsController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	private ModelAndView homePageRedirect() {
+		return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
 	}
 	
 }
