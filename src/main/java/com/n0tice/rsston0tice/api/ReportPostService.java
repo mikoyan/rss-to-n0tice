@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
-import org.scribe.model.Token;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -15,10 +14,11 @@ import com.n0tice.api.client.exceptions.BadRequestException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.rsston0tice.daos.AccessTokenDAO;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
-import com.n0tice.rsston0tice.model.UsersAccessToken;
 import com.n0tice.rsston0tice.model.FeedItem;
+import com.n0tice.rsston0tice.model.UsersAccessToken;
 
 @Component
 public class ReportPostService {
@@ -38,7 +38,7 @@ public class ReportPostService {
 	
 	public void postReports(List<FeedItem> feedItems, String user, String noticeboard) {
 		final UsersAccessToken accessToken = accessTokenDAO.getAccessTokenFor(user);
-		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new Token(accessToken.getToken(), accessToken.getSecret()));
+		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
 		
         for (FeedItem feedItem : feedItems) {
 			if (feedItem.isGeoTagged()) {

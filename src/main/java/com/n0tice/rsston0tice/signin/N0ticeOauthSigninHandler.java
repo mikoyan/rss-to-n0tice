@@ -24,6 +24,7 @@ import com.n0tice.api.client.exceptions.BadRequestException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.User;
 import com.n0tice.api.client.oauth.N0ticeOauthApi;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
@@ -109,7 +110,7 @@ public class N0ticeOauthSigninHandler implements SigninHandler {
 					requestTokens.remove(requestToken.getToken());
 					
 					log.info("Using access token to lookup user details using the n0tice api");					
-					final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(accessToken);
+					final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
 					
 					try {
 						final User user = n0ticeApi.verify();
