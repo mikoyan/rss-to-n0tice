@@ -51,5 +51,26 @@
 			</map>
 		</property>
 	</bean>
-				  	  	          	
+	
+	<bean id="scheduledImportRunner"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="scheduledImportTask" />
+		<property name="targetMethod" value="run" />
+		<property name="concurrent" value="false" />
+	</bean>
+
+	<bean id="scheduledImportTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="jobDetail" ref="scheduledImportRunner" />
+		<property name="startDelay" value="60000" />
+		<property name="repeatInterval" value="3600000" />
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="scheduledImportTrigger" />
+			</list>
+		</property>
+	</bean>
+		  	  	          	
 </beans>

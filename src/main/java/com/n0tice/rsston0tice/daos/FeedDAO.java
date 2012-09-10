@@ -23,8 +23,14 @@ public class FeedDAO {
 
 	public List<Feed> getFeedsForUser(String username) {
 		final Query<Feed> q = datastore.createQuery(Feed.class).
-				field("user").equal(username);
-			return q.asList();		
+			field("user").equal(username);
+		return q.asList();		
+	}
+	
+	public List<Feed> getAllScheduledFeeds() {
+		final Query<Feed> q = datastore.createQuery(Feed.class).
+			field("scheduled").equal(true);
+		return q.asList();
 	}
 
 	public void addNewFeedForUser(Feed feed) {
