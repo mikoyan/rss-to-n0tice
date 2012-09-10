@@ -77,7 +77,7 @@ public class FeedsController {
 	}
 	
 	@RequestMapping(value="/feeds/{feedNumber}",  method=RequestMethod.GET)
-	public ModelAndView newFeed(@PathVariable("feedNumber") int feedNumber) {
+	public ModelAndView feedItems(@PathVariable("feedNumber") int feedNumber) {
         ModelAndView mv = new ModelAndView("feed");
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());        
         
@@ -92,16 +92,18 @@ public class FeedsController {
     }
 	
 	@RequestMapping(value="/feeds/{feedNumber}", method=RequestMethod.POST)
-	public ModelAndView importFeedItems(@PathVariable("feedNumber") int feedNumber) {
-        ModelAndView mv = new ModelAndView("feed");
-        mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());        
-        
+	public ModelAndView importFeedItems(@PathVariable("feedNumber") int feedNumber) {        
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
         List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
  
-        reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard());
+        final int importedCount = reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard());
         
-		return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
+        ModelAndView mv = new ModelAndView("imported");
+        mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());
+		mv.addObject("feed", feed);
+		mv.addObject("feedNumber", feedNumber);
+		mv.addObject("importedCount", importedCount);        
+        return mv;
     }
 	
 	private void populateUsersNoticeboardList(ModelAndView mv) {

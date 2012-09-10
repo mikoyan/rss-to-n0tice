@@ -39,10 +39,11 @@ public class ReportPostService {
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
 	}
 	
-	public void postReports(List<FeedItem> feedItems, String user, String noticeboard) {
+	public int postReports(List<FeedItem> feedItems, String user, String noticeboard) {
 		final UsersAccessToken accessToken = accessTokenDAO.getAccessTokenFor(user);
 		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
 		
+		int importedCount = 0;
         for (FeedItem feedItem : feedItems) {
 			if (feedItem.isGeoTagged()) {
 				
@@ -52,6 +53,7 @@ public class ReportPostService {
 					try {
 						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, noticeboard, new DateTime(feedItem.getDate()));
 						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard);
+						importedCount++;
 					
 					} catch (NotFoundException e) {
 						// TODO Auto-generated catch block
@@ -78,6 +80,8 @@ public class ReportPostService {
 				}
 			}
 		}
+        
+        return importedCount;
 	}
 	
 }
