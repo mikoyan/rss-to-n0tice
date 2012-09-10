@@ -1,3 +1,11 @@
+<head>
+<style>
+	.feeditem {
+		padding-bottom: 10pt;
+	}
+</style>
+</head>
+
 <h4>RSS to n0tice</h4>
  
 <p>
@@ -16,20 +24,24 @@
 
 #if($feeditems && $feeditems.size() > 0) 
 	<p>Feed items:<p>
-	<ul>
-	#foreach ($feeditem in $feeditems)
-		<li>$feeditem.title
-			#if ($feeditem.geoTagged) 
-				<br />$feeditem.latitude - $feeditem.longitude
-			#end
-		</li>
-	#end
+	<ul class="feeditems">
+		#foreach ($feeditem in $feeditems)
+			<li class="feeditem">			
+				$escape.html($feeditem.title)
+				#if ($feeditem.geoTagged) 
+					<br />$feeditem.latitude - $feeditem.longitude
+				#end
+				#if ($feeditem.hasHistory()) 
+					<p>Imported</p>
+				#end
+			</li>
+		#end
 	</ul>
 
 	<form action="$urlBuilder.getFeedUrl($feedNumber)" method="POST">
 		<input type="submit" value="Import geotagged feed items" />	
 	<form>
-			
+				
 #else
 	<p>No feed items could be loaded from this feed.</p>
 #end

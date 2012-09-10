@@ -24,6 +24,7 @@ import com.n0tice.rsston0tice.feeds.FeedFetcher;
 import com.n0tice.rsston0tice.model.Feed;
 import com.n0tice.rsston0tice.model.FeedItem;
 import com.n0tice.rsston0tice.model.forms.NewFeedForm;
+import com.n0tice.rsston0tice.services.FeedItemHistoryService;
 
 @Controller
 public class FeedsController {
@@ -32,15 +33,17 @@ public class FeedsController {
 	private FeedDAO feedDAO;
 	private UrlBuilder urlBuilder;
 	private FeedFetcher feedFetcher;
+	private FeedItemHistoryService feedItemHistoryService;
 	private ReportPostService reportPostService;
 	private N0ticeApiFactory n0ticeApiFactory;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, ReportPostService reportPostService, N0ticeApiFactory n0ticeApiFactory) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, ReportPostService reportPostService, N0ticeApiFactory n0ticeApiFactory) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
 		this.feedFetcher = feedFetcher;
+		this.feedItemHistoryService = feedItemHistoryService;
 		this.reportPostService = reportPostService;
 		this.n0ticeApiFactory = n0ticeApiFactory;
 	}
@@ -81,7 +84,10 @@ public class FeedsController {
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
 		mv.addObject("feed", feed);
 		mv.addObject("feedNumber", feedNumber);
-        mv.addObject("feeditems", feedFetcher.getFeedItems(feed.getUrl()));
+        List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
+        if (feedItems != null) {
+        	mv.addObject("feeditems", feedItemHistoryService.decorateFeedItemsWithHistory(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard()));
+        }
         return mv;
     }
 	
