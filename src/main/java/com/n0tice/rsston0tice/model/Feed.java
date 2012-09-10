@@ -11,15 +11,17 @@ public class Feed {
 	private String title;
 	private String url;
 	private String noticeboard;
+	private Boolean scheduled;
 	
 	public Feed() {
 	}
 	
-	public Feed(String user, String title, String url, String noticeboard) {
+	public Feed(String user, String title, String url, String noticeboard, boolean scheduled) {
 		this.user = user;
 		this.title = title;
 		this.url = url;
 		this.noticeboard = noticeboard;
+		this.scheduled = scheduled;
 	}
 	
 	public String getUser() {
@@ -37,10 +39,15 @@ public class Feed {
 	public String getNoticeboard() {
 		return noticeboard;
 	}
+	
+	public boolean isScheduled() {
+		return scheduled != null ? scheduled : false;
+	}
 
 	@Override
 	public String toString() {
-		return "Feed [user=" + user + ", title=" + title + ", url=" + url + ", noticeboard=" + noticeboard + "]";
+		return "Feed [user=" + user + ", title=" + title + ", url=" + url
+				+ ", noticeboard=" + noticeboard + ", scheduled=" + scheduled + "]";
 	}
 	
 }

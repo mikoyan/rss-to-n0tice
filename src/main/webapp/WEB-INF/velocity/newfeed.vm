@@ -27,7 +27,13 @@
 			#end
 		#end		
 	</select>
-		
+	
+	#springBind( "feed.scheduled" )
+	Scheduled: 
+		<input type="hidden" name="_${status.expression}" value="$!status.value" />	
+		<input type="checkbox" name="${status.expression}" value="true" #if(${status.value}) checked #end>
+	<br/>
+			
 	<input type="submit" value="Add new feed" />
 	
 <form>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -28,7 +29,7 @@ import com.n0tice.rsston0tice.services.FeedItemHistoryService;
 
 @Controller
 public class FeedsController {
-		
+	
 	private LoggedInUserFilter loggedInUserFilter;
 	private FeedDAO feedDAO;
 	private UrlBuilder urlBuilder;
@@ -73,7 +74,9 @@ public class FeedsController {
 					loggedInUserFilter.getLoggedInUser(),
 					feedFetcher.getFeedTitle(feedForm.getUrl()),
 					feedForm.getUrl(),
-					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
+					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null,
+					feedForm.isScheduled());
+			
 			feedDAO.addNewFeedForUser(feed);	
 			return homePageRedirect();
 		}

@@ -8,7 +8,9 @@ public class NewFeedForm {
 	private String url;
     
     private String noticeboard;
-
+    
+    private boolean scheduled;
+    
 	public String getUrl() {
 		return url;
 	}
@@ -23,6 +25,14 @@ public class NewFeedForm {
 
 	public void setNoticeboard(String noticeboard) {
 		this.noticeboard = noticeboard;
+	}
+
+	public boolean isScheduled() {
+		return scheduled;
+	}
+
+	public void setScheduled(boolean scheduled) {
+		this.scheduled = scheduled;
 	}
 	
 }
