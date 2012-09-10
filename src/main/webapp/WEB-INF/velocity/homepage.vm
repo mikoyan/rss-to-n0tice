@@ -13,9 +13,9 @@
 	#if($feeds && $feeds.size() > 0) 
 		<p>Your feeds:<p>
 		<ul>
-		#foreach ($feed in $feeds)
-			<li><a href="$urlBuilder.getFeedUrl($velocityCount)">$escape.html($feed.url)</li>
-		#end
+			#foreach ($feed in $feeds)
+				<li><a href="$urlBuilder.getFeedUrl($velocityCount)">#if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</a></li>
+			#end
 		</ul>
 	
 	#else

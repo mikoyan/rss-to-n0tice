@@ -20,9 +20,19 @@ public class FeedFetcher {
 	
 	private static Logger log = Logger.getLogger(FeedFetcher.class);
 	
+	public String getFeedTitle(String url) {
+		final SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
+    	if (syndfeed == null) {
+    		log.warn("Could not load syndfeed from url: " + url + ". Returning empty list of items");
+    		return null;
+    	}
+    	
+    	return syndfeed.getTitle();
+	}
+	
 	public List<FeedItem> getFeedItems(String url) {
-		List<FeedItem> feedItems = new ArrayList<FeedItem>();
-    	SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
+		final List<FeedItem> feedItems = new ArrayList<FeedItem>();
+    	final SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
     	if (syndfeed == null) {
     		log.warn("Could not load syndfeed from url: " + url + ". Returning empty list of items");
     		return null;

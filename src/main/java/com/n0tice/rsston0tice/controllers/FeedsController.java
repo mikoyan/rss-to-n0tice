@@ -64,6 +64,7 @@ public class FeedsController {
 		if (!result.hasErrors()) {
 			final Feed feed = new Feed(
 					loggedInUserFilter.getLoggedInUser(),
+					feedFetcher.getFeedTitle(feedForm.getUrl()),
 					feedForm.getUrl(),
 					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null);
 			feedDAO.addNewFeedForUser(feed);	

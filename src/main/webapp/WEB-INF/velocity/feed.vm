@@ -16,7 +16,7 @@
 #end
 </p>
 
-<h5>Feed: $escape.html($feed.url)</h5>
+<h5>Feed: #if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</h5>
 
 #if($feed.noticeboard) 
 	<p>Importing to $escape.html($feed.noticeboard)</p>
