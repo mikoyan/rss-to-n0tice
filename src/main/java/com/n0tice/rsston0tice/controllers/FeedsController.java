@@ -4,7 +4,6 @@ import java.util.List;
 
 import javax.validation.Valid;
 
-import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
@@ -19,12 +18,12 @@ import com.n0tice.api.client.exceptions.HttpFetchException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
-import com.n0tice.rsston0tice.api.ReportPostService;
 import com.n0tice.rsston0tice.daos.FeedDAO;
 import com.n0tice.rsston0tice.feeds.FeedFetcher;
 import com.n0tice.rsston0tice.model.Feed;
 import com.n0tice.rsston0tice.model.FeedItem;
 import com.n0tice.rsston0tice.model.forms.NewFeedForm;
+import com.n0tice.rsston0tice.services.FeedImportService;
 import com.n0tice.rsston0tice.services.FeedItemHistoryService;
 
 @Controller
@@ -35,18 +34,18 @@ public class FeedsController {
 	private UrlBuilder urlBuilder;
 	private FeedFetcher feedFetcher;
 	private FeedItemHistoryService feedItemHistoryService;
-	private ReportPostService reportPostService;
 	private N0ticeApiFactory n0ticeApiFactory;
+	private FeedImportService feedImportService;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, ReportPostService reportPostService, N0ticeApiFactory n0ticeApiFactory) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, N0ticeApiFactory n0ticeApiFactory, FeedImportService feedImportService) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
 		this.feedFetcher = feedFetcher;
 		this.feedItemHistoryService = feedItemHistoryService;
-		this.reportPostService = reportPostService;
 		this.n0ticeApiFactory = n0ticeApiFactory;
+		this.feedImportService = feedImportService;
 	}
 	
 	@RequestMapping("/feeds/new")
@@ -112,12 +111,10 @@ public class FeedsController {
 			return homePageRedirect();
 		}
 		
-        final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
-        List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
+        final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);       
+        final int importedCount = feedImportService.importFeed(feed);
         
-        final int importedCount = reportPostService.postReports(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard());
-        
-        ModelAndView mv = new ModelAndView("imported");
+        final ModelAndView mv = new ModelAndView("imported");
         mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());
 		mv.addObject("feed", feed);
 		mv.addObject("feedNumber", feedNumber);
