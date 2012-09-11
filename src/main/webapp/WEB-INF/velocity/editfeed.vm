@@ -8,10 +8,15 @@
 #end
 </p>
 
-<h5>New feed</h5>
+<h5>Edit feed</h5>
 
-<form action="$urlBuilder.newFeedUrl" method="POST">
+<form action="$urlBuilder.getFeedUrl($feedNumber)/edit" method="POST">
 
+  	#springBind( "feed.title" )
+	Title: <input name="${status.expression}" value="$!status.value" />	
+	<br/>
+	#foreach($error in $status.errorMessages) <b>$error</b> <br> #end
+	
   	#springBind( "feed.url" )
 	Url: <input name="${status.expression}" value="$!status.value" />	
 	<br/>
@@ -25,7 +30,7 @@
 			#foreach ($noticeboard in $noticeboards)
 				<option value="$escape.html($noticeboard.domain)" #if($noticeboard.domain == $status.value) SELECTED #end >$escape.html($noticeboard.name)
 			#end
-		#end		
+		#end
 	</select>
 	
 	#springBind( "feed.scheduled" )
@@ -34,6 +39,6 @@
 		<input type="checkbox" name="${status.expression}" value="true" #if(${status.value} == true) checked #end>
 	<br/>
 			
-	<input type="submit" value="Add new feed" />
+	<input type="submit" value="Update feed" />
 	
 <form>

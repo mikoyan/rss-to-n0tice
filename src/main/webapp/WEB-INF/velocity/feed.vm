@@ -18,6 +18,8 @@
 
 <h5>Feed: #if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</h5>
 
+<p><a href="$urlBuilder.getFeedUrl($feedNumber)/edit">Edit</a></p>
+
 <p>Scheduled: $feed.scheduled</p>
 
 #if($feed.noticeboard) 
@@ -49,7 +51,7 @@
 		#end
 	</ul>
 
-	<form action="$urlBuilder.getFeedUrl($feedNumber)" method="POST">
+	<form action="$urlBuilder.getFeedUrl($feedNumber)/import" method="POST">
 		<input type="submit" value="Import geotagged feed items" />	
 	<form>
 				

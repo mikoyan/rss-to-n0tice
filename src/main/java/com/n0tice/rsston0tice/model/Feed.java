@@ -1,10 +1,15 @@
 package com.n0tice.rsston0tice.model;
 
+import org.bson.types.ObjectId;
 import com.google.code.morphia.annotations.Entity;
+import com.google.code.morphia.annotations.Id;
 import com.google.code.morphia.annotations.Indexed;
 
 @Entity("feeds")
 public class Feed {
+	
+	@Id
+	private ObjectId id;
 	
 	@Indexed
 	private String user;
@@ -42,6 +47,22 @@ public class Feed {
 	
 	public boolean isScheduled() {
 		return scheduled != null ? scheduled : false;
+	}
+	
+	public void setTitle(String title) {
+		this.title = title;
+	}
+
+	public void setUrl(String url) {
+		this.url = url;
+	}
+
+	public void setNoticeboard(String noticeboard) {
+		this.noticeboard = noticeboard;
+	}
+
+	public void setScheduled(Boolean scheduled) {
+		this.scheduled = scheduled;
 	}
 
 	@Override

@@ -33,7 +33,7 @@ public class FeedDAO {
 		return q.asList();
 	}
 
-	public void addNewFeedForUser(Feed feed) {
+	public void save(Feed feed) {
 		datastore.save(feed);
 	}
 	
