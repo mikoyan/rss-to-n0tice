@@ -55,5 +55,9 @@ public class FeedItemWithHistory {
 	public String getN0ticeWebUrl() {
 		return feedItemHistory.getN0ticeWebUrl();
 	}
-		
+
+	public String getImageUrl() {
+		return feedItem.getImageUrl();
+	}
+	
 }

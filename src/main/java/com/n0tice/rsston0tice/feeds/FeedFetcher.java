@@ -60,7 +60,7 @@ public class FeedFetcher {
 			final String imageUrl = extractImage(syndEntry);
 			
         	final String body = syndEntry.getDescription() != null ? syndEntry.getDescription().getValue() : null;
-			feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), body, syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude));
+			feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), body, syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude, imageUrl));
         }
         
         return feedItems;

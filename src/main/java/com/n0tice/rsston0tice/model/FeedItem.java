@@ -11,8 +11,9 @@ public class FeedItem {
 	private final Date date;
 	private final Double latitude;
 	private final Double longitude;
+	private final String imageUrl;
 
-	public FeedItem(String title, String uri, String body, String link, Date date, Double latitude, Double longitude) {
+	public FeedItem(String title, String uri, String body, String link, Date date, Double latitude, Double longitude, String imageUrl) {
 		this.title = title;
 		this.uri = uri;
 		this.body = body;
@@ -20,6 +21,7 @@ public class FeedItem {
 		this.date = date;
 		this.latitude = latitude;
 		this.longitude = longitude;
+		this.imageUrl = imageUrl;
 	}
 
 	public String getTitle() {
@@ -50,15 +52,20 @@ public class FeedItem {
 		return longitude;
 	}
 	
+	public String getImageUrl() {
+		return imageUrl;
+	}
+	
 	public boolean isGeoTagged() {
 		return latitude != null && longitude != null;
 	}
 
 	@Override
 	public String toString() {
-		return "FeedItem [title=" + title + ", uri=" + uri + ", body=" + body
-				+ ", link=" + link + ", date=" + date + ", latitude="
-				+ latitude + ", longitude=" + longitude + "]";
+		return "FeedItem [body=" + body + ", date=" + date + ", imageUrl="
+				+ imageUrl + ", latitude=" + latitude + ", link=" + link
+				+ ", longitude=" + longitude + ", title=" + title + ", uri="
+				+ uri + "]";
 	}
 	
 }

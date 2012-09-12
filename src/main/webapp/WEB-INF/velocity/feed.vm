@@ -39,6 +39,10 @@
 					<br />$feeditem.latitude - $feeditem.longitude
 				#end
 				
+				#if ($feeditem.imageUrl)
+					<p><img src="$feeditem.imageUrl" /></p>
+				#end
+				
 				#if ($feeditem.hasHistory()) 
 					<p>Imported
 					#if($feeditem.importNoticeboard)  
@@ -53,7 +57,7 @@
 					#if($feeditem.n0ticeId)
 						<br/><a href="$urlBuilder.getTakeDownUrl($feeditem.n0ticeId, $feedNumber)">Take down</a>
 					#end
-					</p>
+					</p>					
 				#end
 			</li>
 		#end
