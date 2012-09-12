@@ -20,6 +20,8 @@
 
 <p><a href="$urlBuilder.getFeedUrl($feedNumber)/edit">Edit</a></p>
 
+<p><a href="$urlBuilder.getFeedUrl($feedNumber)/delete">Delete</a></p>
+
 <p>Scheduled: $feed.scheduled</p>
 
 #if($feed.noticeboard) 

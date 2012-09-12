@@ -1,0 +1,23 @@
+<h4>RSS to n0tice</h4>
+ 
+<p>
+#if ($loggedInUsername) 
+	Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
+#else
+	<a href="$urlBuilder.loginUrl">Login</a>
+#end
+</p>
+
+<h5>Delete feed</h5>
+
+<h5>Feed: #if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</h5>
+
+<p>Are you sure that you wish to delete this feed?</p>
+
+<form action="$urlBuilder.getFeedUrl($feedNumber)/delete" method="POST">	
+	<input type="submit" value="Delete feed" />
+</form>
+
+<form action="$urlBuilder.getFeedUrl($feedNumber)" method="GET">
+	<input type="submit" value="Cancel" />	
+</form>

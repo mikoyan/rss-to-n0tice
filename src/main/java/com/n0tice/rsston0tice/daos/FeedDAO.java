@@ -36,5 +36,9 @@ public class FeedDAO {
 	public void save(Feed feed) {
 		datastore.save(feed);
 	}
+
+	public void delete(Feed feed) {
+		datastore.delete(feed);		
+	}
 	
 }

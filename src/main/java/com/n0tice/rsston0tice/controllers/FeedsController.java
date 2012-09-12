@@ -105,6 +105,35 @@ public class FeedsController {
 		return mv;
     }
 	
+	@RequestMapping(value="/feeds/{feedNumber}/delete",  method=RequestMethod.GET)
+	public ModelAndView deleteFeedConfirm(@PathVariable("feedNumber") int feedNumber) {
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
+		
+		ModelAndView mv = new ModelAndView("deletefeedconfirm");
+        mv.addObject("loggedInUsername", loggedInUserFilter.getLoggedInUser());        
+        
+        final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
+		mv.addObject("feed", feed);
+		mv.addObject("feedNumber", feedNumber);
+		return mv;
+    }
+
+	@RequestMapping(value="/feeds/{feedNumber}/delete",  method=RequestMethod.POST)
+	public ModelAndView deleteFeed(@PathVariable("feedNumber") int feedNumber) {
+		if (loggedInUserFilter.getLoggedInUser() == null) {
+			return homePageRedirect();
+		}
+		
+        final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
+        if (feed != null) {
+        	log.info("Deleting feed: " + feed);
+        	feedDAO.delete(feed);
+        }
+        
+		return homePageRedirect();
+    }
 	@RequestMapping(value="/feeds/{feedNumber}/edit", method=RequestMethod.POST)
 	public ModelAndView updateFeed(@PathVariable("feedNumber") int feedNumber, @Valid @ModelAttribute("feed") EditFeedForm feedForm, BindingResult result) throws Exception {
 		if (loggedInUserFilter.getLoggedInUser() == null) {
