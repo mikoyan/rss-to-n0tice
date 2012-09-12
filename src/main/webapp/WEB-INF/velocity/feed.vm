@@ -49,7 +49,10 @@
 					#end
 					#if($feeditem.n0ticeWebUrl)
 						- <a href="$feeditem.n0ticeWebUrl")>Link</a>
-					#end					
+					#end
+					#if($feeditem.n0ticeId)
+						<br/><a href="$urlBuilder.getTakeDownUrl($feeditem.n0ticeId, $feedNumber)">Take down</a>
+					#end
 					</p>
 				#end
 			</li>

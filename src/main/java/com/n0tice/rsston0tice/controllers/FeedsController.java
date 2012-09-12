@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -27,6 +28,7 @@ import com.n0tice.rsston0tice.model.forms.EditFeedForm;
 import com.n0tice.rsston0tice.model.forms.NewFeedForm;
 import com.n0tice.rsston0tice.services.FeedImportService;
 import com.n0tice.rsston0tice.services.FeedItemHistoryService;
+import com.n0tice.rsston0tice.services.TakeDownService;
 
 @Controller
 public class FeedsController {
@@ -40,9 +42,10 @@ public class FeedsController {
 	private FeedItemHistoryService feedItemHistoryService;
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedImportService feedImportService;
+	private TakeDownService takeDownService;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, N0ticeApiFactory n0ticeApiFactory, FeedImportService feedImportService) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, N0ticeApiFactory n0ticeApiFactory, FeedImportService feedImportService, TakeDownService takeDownService) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
@@ -50,6 +53,7 @@ public class FeedsController {
 		this.feedItemHistoryService = feedItemHistoryService;
 		this.n0ticeApiFactory = n0ticeApiFactory;
 		this.feedImportService = feedImportService;
+		this.takeDownService = takeDownService;
 	}
 	
 	@RequestMapping("/feeds/new")
@@ -197,6 +201,19 @@ public class FeedsController {
         return mv;
     }
 	
+	@RequestMapping(value="/takedown", method=RequestMethod.GET)	// TODO confirm screen
+	public ModelAndView takeDown(@RequestParam(value="id", required=true) String id, @RequestParam(value="feed", required=true) int feed) {
+		final String user = loggedInUserFilter.getLoggedInUser();
+		if (user == null) {
+			return homePageRedirect();
+		}
+		
+		log.info("User " + user + " requested takedown of: " + id);
+		takeDownService.takeDown(user, id);
+		
+		return feedPageRedirect(feed);
+    }
+	
 	private void populateUsersNoticeboardList(ModelAndView mv) {
 		try {
 			mv.addObject("noticeboards", n0ticeApiFactory.getReadOnlyApi().noticeboards(loggedInUserFilter.getLoggedInUser()));
@@ -214,6 +231,10 @@ public class FeedsController {
 	
 	private ModelAndView homePageRedirect() {
 		return new ModelAndView(new RedirectView(urlBuilder.getHomepageUrl()));
+	}
+	
+	private ModelAndView feedPageRedirect(int feedNumber) {
+		return new ModelAndView(new RedirectView(urlBuilder.getFeedUrl(feedNumber)));
 	}
 	
 }

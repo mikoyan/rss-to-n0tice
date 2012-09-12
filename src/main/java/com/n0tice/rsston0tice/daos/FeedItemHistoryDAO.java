@@ -52,4 +52,10 @@ public class FeedItemHistoryDAO {
 				field("noticeboard").equal(noticeboard);
 	}
 
+	public void removeHistoryForNoticeId(String n0ticeId) {
+		final Query<FeedItemHistory> q = datastore.createQuery(FeedItemHistory.class).
+				field("n0ticeId").equal(n0ticeId);
+		datastore.delete(q);
+	}
+
 }

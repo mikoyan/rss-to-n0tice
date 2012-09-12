@@ -14,35 +14,29 @@ import com.n0tice.api.client.exceptions.BadRequestException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
-import com.n0tice.api.client.model.AccessToken;
 import com.n0tice.api.client.model.Content;
-import com.n0tice.rsston0tice.daos.AccessTokenDAO;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
 import com.n0tice.rsston0tice.feeds.FeedItemGuidService;
 import com.n0tice.rsston0tice.model.FeedItem;
-import com.n0tice.rsston0tice.model.UsersAccessToken;
 
 @Component
 public class ReportPostService {
 	
 	private static Logger log = Logger.getLogger(ReportPostService.class);
 
-	private AccessTokenDAO accessTokenDAO;
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedItemGuidService feedItemGuidService;
 	private FeedItemHistoryDAO feedItemHistoryDAO;
 	
 	@Autowired
-	public ReportPostService(AccessTokenDAO accessTokenDAO, N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO) {
-		this.accessTokenDAO = accessTokenDAO;
+	public ReportPostService(N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO) {
 		this.n0ticeApiFactory = n0ticeApiFactory;
 		this.feedItemGuidService = feedItemGuidService;
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
 	}
 	
 	public int postReports(List<FeedItem> feedItems, String user, String noticeboard) {
-		final UsersAccessToken accessToken = accessTokenDAO.getAccessTokenFor(user);
-		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApi(new AccessToken(accessToken.getToken(), accessToken.getSecret()));
+		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApiFor(user);
 		
 		int importedCount = 0;
         for (FeedItem feedItem : feedItems) {
