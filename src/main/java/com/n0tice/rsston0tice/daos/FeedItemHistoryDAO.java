@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 import com.google.code.morphia.Datastore;
 import com.google.code.morphia.query.Query;
 import com.mongodb.MongoException;
+import com.n0tice.api.client.model.Content;
 import com.n0tice.rsston0tice.model.FeedItemHistory;
 
 @Component
@@ -22,8 +23,8 @@ public class FeedItemHistoryDAO {
 		this.datastore = dataStoreFactory.getDatastore();
 	}
 	
-	public void markAsImported(String user, String guid, String noticeboard) {
-		datastore.save(new FeedItemHistory(user, guid, noticeboard, DateTime.now().toDate()));
+	public void markAsImported(String user, String guid, String noticeboard, Content postedReport) {
+		datastore.save(new FeedItemHistory(user, guid, noticeboard, DateTime.now().toDate(), postedReport.getId(), postedReport.getWebUrl()));
 	}
 	
 	public boolean hasBeenImportedAlready(String user, String guid, String noticeboard) {

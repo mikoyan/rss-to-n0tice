@@ -15,6 +15,7 @@ import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.AccessToken;
+import com.n0tice.api.client.model.Content;
 import com.n0tice.rsston0tice.daos.AccessTokenDAO;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
 import com.n0tice.rsston0tice.feeds.FeedItemGuidService;
@@ -51,8 +52,8 @@ public class ReportPostService {
 				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid, noticeboard)) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
-						n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, noticeboard, new DateTime(feedItem.getDate()));
-						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard);
+						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), null, noticeboard, new DateTime(feedItem.getDate()));
+						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard, postedReport);
 						importedCount++;
 					
 					} catch (NotFoundException e) {

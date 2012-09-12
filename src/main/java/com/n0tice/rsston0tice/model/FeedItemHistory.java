@@ -18,15 +18,21 @@ public class FeedItemHistory  {
 	private String noticeboard;
 
 	private Date date;
+
+	private String n0ticeId;
+
+	private String n0ticeWebUrl;
 	
 	public FeedItemHistory() {
 	}
 	
-	public FeedItemHistory(String user, String guid, String noticeboard, Date date) {
+	public FeedItemHistory(String user, String guid, String noticeboard, Date date, String n0ticeId, String n0ticeWebUrl) {
 		this.user = user;
 		this.guid = guid;
 		this.noticeboard = noticeboard;
 		this.date = date;
+		this.n0ticeId = n0ticeId;
+		this.n0ticeWebUrl = n0ticeWebUrl;
 	}
 
 	public String getUser() {
@@ -44,10 +50,21 @@ public class FeedItemHistory  {
 	public Date getDate() {
 		return date;
 	}
+	
+	public String getN0ticeId() {
+		return n0ticeId;
+	}
+
+	public String getN0ticeWebUrl() {
+		return n0ticeWebUrl;
+	}
 
 	@Override
 	public String toString() {
-		return "FeedItemHistory [user=" + user + ", guid=" + guid + ", noticeboard=" + noticeboard + ", date=" + date + "]";
+		return "FeedItemHistory [user=" + user + ", guid=" + guid
+				+ ", noticeboard=" + noticeboard + ", date=" + date
+				+ ", n0ticeId=" + n0ticeId + ", n0ticeWebUrl=" + n0ticeWebUrl
+				+ "]";
 	}
 	
 }

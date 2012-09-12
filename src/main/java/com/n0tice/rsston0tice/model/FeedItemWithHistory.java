@@ -47,5 +47,9 @@ public class FeedItemWithHistory {
 	public String getImportNoticeboard() {
 		return feedItemHistory != null ?feedItemHistory.getNoticeboard() : null;
 	}
+
+	public String getN0ticeWebUrl() {
+		return feedItemHistory.getN0ticeWebUrl();
+	}
 	
 }
