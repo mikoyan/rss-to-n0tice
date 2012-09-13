@@ -14,9 +14,6 @@ import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModuleImpl;
 import com.sun.syndication.feed.module.mediarss.MediaModule;
 import com.sun.syndication.feed.module.mediarss.types.MediaContent;
-import com.sun.syndication.feed.module.mediarss.types.Metadata;
-import com.sun.syndication.feed.module.mediarss.types.Reference;
-import com.sun.syndication.feed.module.mediarss.types.Thumbnail;
 import com.sun.syndication.feed.synd.SyndEntry;
 import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
@@ -93,7 +90,7 @@ public class FeedFetcher {
 			MediaContent selectedMediaContent = null;
 			for (int i = 0; i < mediaContents.length; i++) {
 				MediaContent mediaContent = mediaContents[i];
-				final boolean isImage = mediaContent.getType() != null && mediaContent.getType().equals("image/jpeg") && mediaContent.getReference() != null;
+				final boolean isImage = isImage(mediaContent);
 				if (isImage && isBetterThanCurrentlySelected(mediaContent, selectedMediaContent)) {
 					selectedMediaContent = mediaContent;
 				}
@@ -109,6 +106,12 @@ public class FeedFetcher {
 		return null;
 	}
 
+	private boolean isImage(MediaContent mediaContent) {
+		final boolean hasTypeJpegAttribute = mediaContent.getType() != null && mediaContent.getType().equals("image/jpeg");
+		final boolean isJpegUrl = mediaContent.getReference() != null && mediaContent.getReference().toString().endsWith("jpg");	 // TODO test cover and .
+		return mediaContent.getReference() != null && (hasTypeJpegAttribute || isJpegUrl);
+	}
+	
 	private boolean isBetterThanCurrentlySelected(MediaContent mediaContent, MediaContent selectedMediaContent) {
 		if (selectedMediaContent == null) {
 			return true;
