@@ -89,35 +89,31 @@ public class FeedFetcher {
 		}
 		
 		final MediaContent[] mediaContents = mediaModule.getMediaContents();
-		if (mediaContents.length > 0) {
-			MediaContent mediaContent = mediaContents[0];
-			
-			final Metadata metadata = mediaContent.getMetadata();
-			final Thumbnail[] thumbnails = metadata.getThumbnail();
-			if (thumbnails.length > 0) {
-				Thumbnail thumbnail = thumbnails[0];
-				log.info("Took first thumbnail on first mediaContent: " + thumbnail.getUrl());
-				return thumbnail.getUrl().toExternalForm();
-			}
-
-			if (mediaContent.getReference() != null) {
-				final Reference reference = mediaContent.getReference();
-				if (reference.toString().endsWith(".jpg")) {
-					log.info("Took image reference from first MediaContent: " + reference);
+		if (mediaContents.length > 0) {			
+			MediaContent selectedMediaContent = null;
+			for (int i = 0; i < mediaContents.length; i++) {
+				MediaContent mediaContent = mediaContents[i];
+				final boolean isImage = mediaContent.getType() != null && mediaContent.getType().equals("image/jpeg") && mediaContent.getReference() != null;
+				if (isImage && isBetterThanCurrentlySelected(mediaContent, selectedMediaContent)) {
+					selectedMediaContent = mediaContent;
 				}
-				return reference.toString();
 			}
-			log.info(mediaContent.getReference());
+			
+			if (selectedMediaContent != null) {
+				log.info("Took image reference from MediaContent: " + selectedMediaContent.getReference().toString());
+				return selectedMediaContent.getReference().toString();
+			}
 		}
 
-		final Thumbnail[] thumbnails = mediaModule.getMetadata().getThumbnail();
-		if (thumbnails.length > 0) {
-			Thumbnail thumbnail = thumbnails[0];
-			log.info("Took first thumbnail from module metadata: " + thumbnail.getUrl());
-			return thumbnail.getUrl().toExternalForm();
-		}
-		
+		log.info("No suitable media element image seen");
 		return null;
+	}
+
+	private boolean isBetterThanCurrentlySelected(MediaContent mediaContent, MediaContent selectedMediaContent) {
+		if (selectedMediaContent == null) {
+			return true;
+		}		
+		return mediaContent.getWidth() > selectedMediaContent.getWidth();		
 	}
 
 }

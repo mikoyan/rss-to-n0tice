@@ -53,8 +53,8 @@ public class ReportPostService {
         		longitude = feedItem.getLongitude();
         	}
         	
-			if (latitude != null && longitude != null) {
-				
+			final boolean isFeedItemPositioned = latitude != null && longitude != null;
+			if (isFeedItemPositioned) {				
 				final String feedItemGuid = feedItemGuidService.getGuidFor(feedItem);
 				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid, noticeboard)) {
 					log.info("Importing item: " + feedItem.getTitle());
