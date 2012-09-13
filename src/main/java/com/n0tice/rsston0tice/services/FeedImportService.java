@@ -30,7 +30,7 @@ public class FeedImportService {
 		try {
 			final List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
 			if (feedItems != null) {
-				return reportPostService.postReports(feedItems, feed.getUser(), feed.getNoticeboard());
+				return reportPostService.postReports(feedItems, feed.getUser(), feed.getNoticeboard(), feed.getLatitude(), feed.getLongitude());
 			}			
 		} catch (Exception e) {
 			log.warn("Unexpected exception while importing feed: " + feed.toString(), e);

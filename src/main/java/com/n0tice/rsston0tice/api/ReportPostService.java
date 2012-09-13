@@ -30,8 +30,8 @@ public class ReportPostService {
 
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedItemGuidService feedItemGuidService;
-	private FeedItemHistoryDAO feedItemHistoryDAO;	
-	private HttpFetcher httpFetcher;
+	private FeedItemHistoryDAO feedItemHistoryDAO;
+	private HttpFetcher httpFetcher;	
 	
 	@Autowired
 	public ReportPostService(N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO) {
@@ -41,40 +41,41 @@ public class ReportPostService {
 		httpFetcher = new HttpFetcher();
 	}
 	
-	public int postReports(List<FeedItem> feedItems, String user, String noticeboard) {
+	public int postReports(List<FeedItem> feedItems, String user, String noticeboard, Double defaultLatitude, Double defaultLongitude) {
 		final N0ticeApi n0ticeApi = n0ticeApiFactory.getAuthenticatedApiFor(user);
 		
 		int importedCount = 0;
-        for (FeedItem feedItem : feedItems) {
-			if (feedItem.isGeoTagged()) {
+        for (FeedItem feedItem : feedItems) {        	
+        	Double latitude = defaultLatitude;
+        	Double longitude = defaultLongitude;        	
+        	if (feedItem.isGeoTagged()) {
+        		latitude = feedItem.getLatitude();
+        		longitude = feedItem.getLongitude();
+        	}
+        	
+			if (latitude != null && longitude != null) {
 				
 				final String feedItemGuid = feedItemGuidService.getGuidFor(feedItem);
 				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid, noticeboard)) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
 						final ImageFile imageFile = feedItem.getImageUrl() != null ? fetchRemoteImage(feedItem.getImageUrl()) : null;
-						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), feedItem.getLatitude(), feedItem.getLongitude(), feedItem.getBody(), feedItem.getLink(), imageFile, noticeboard, new DateTime(feedItem.getDate()));
+						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), latitude, longitude, feedItem.getBody(), feedItem.getLink(), imageFile, noticeboard, new DateTime(feedItem.getDate()));
 						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard, postedReport);
 						importedCount++;
 					
 					} catch (NotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					} catch (ParsingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					} catch (AuthorisationException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					} catch (NotAllowedException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					} catch (BadRequestException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
+						log.warn(e);
 					}
 				
 				} else {
@@ -89,10 +90,11 @@ public class ReportPostService {
 	private ImageFile fetchRemoteImage(String imageUrl) {
 		log.info("Fetching remote image from: " + imageUrl);
 		try {
-			return new ImageFile(httpFetcher.getBytes(imageUrl), "image.jpg");	// TODO extract image name from url.
+			final ImageFile imageFile = new ImageFile(httpFetcher.getBytes(imageUrl), "image.jpg");
+			log.info("Finished fetching image from: " + imageUrl);
+			return imageFile;	// TODO extract image name from url.			
 		} catch (HttpFetchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e);
 		}
 		return null;
 	}

@@ -28,6 +28,10 @@
 	<p>Importing to $escape.html($feed.noticeboard)</p>
 #end
 
+#if($feed.defaultPosition)
+	<p>Default position: $feed.latitude, $feed.longitude</p>
+#end
+
 #if($feeditems && $feeditems.size() > 0) 
 	<p>Feed items:<p>
 	<ul class="feeditems">
@@ -37,6 +41,10 @@
 								
 				#if ($feeditem.geoTagged) 
 					<br />$feeditem.latitude - $feeditem.longitude
+				#else 
+					#if($feed.defaultPosition)
+						<br /><i>$feed.latitude - $feed.longitude</i>						
+					#end
 				#end
 				
 				#if ($feeditem.imageUrl)

@@ -82,7 +82,9 @@ public class FeedsController {
 					feedFetcher.getFeedTitle(feedForm.getUrl()),
 					feedForm.getUrl(),
 					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null,
-					feedForm.isScheduled());
+					feedForm.isScheduled(),
+					feedForm.getLatitude(),
+					feedForm.getLongitude());
 			
 			feedDAO.save(feed);	
 			return homePageRedirect();
@@ -154,7 +156,10 @@ public class FeedsController {
 			feed.setTitle(feedForm.getTitle());
 			feed.setUrl(feedForm.getUrl());
 			feed.setNoticeboard(feedForm.getNoticeboard());
-			feed.setScheduled(feedForm.isScheduled());			
+			feed.setScheduled(feedForm.isScheduled());
+			feed.setLatitude(feedForm.getLatitude());
+			feed.setLongitude(feedForm.getLongitude());
+			
 			feedDAO.save(feed);
 			return homePageRedirect();
 		}

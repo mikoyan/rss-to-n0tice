@@ -28,6 +28,18 @@
 		#end		
 	</select>
 	
+	<p>
+	#springBind( "feed.latitude" )
+	Default latitude: <input name="${status.expression}" value="$!status.value" />	
+	<br/>
+	#foreach($error in $status.errorMessages) <b>$error</b> <br> #end
+	<br/>
+	#springBind( "feed.longitude" )
+	Default longitude: <input name="${status.expression}" value="$!status.value" />	
+	<br/>
+	#foreach($error in $status.errorMessages) <b>$error</b> <br> #end
+	</p>
+	
 	#springBind( "feed.scheduled" )
 	Scheduled: 
 		<input type="hidden" name="_${status.expression}" value="$!status.value" />	
