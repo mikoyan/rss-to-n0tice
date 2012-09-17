@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import uk.co.eelpieconsulting.common.html.HtmlCleaner;
 import uk.co.eelpieconsulting.common.http.HttpFetchException;
 import uk.co.eelpieconsulting.common.http.HttpFetcher;
 
@@ -31,7 +32,9 @@ public class ReportPostService {
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedItemGuidService feedItemGuidService;
 	private FeedItemHistoryDAO feedItemHistoryDAO;
-	private HttpFetcher httpFetcher;	
+	private HttpFetcher httpFetcher;
+
+	private HtmlCleaner htmlCleaner;	
 	
 	@Autowired
 	public ReportPostService(N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO) {
@@ -39,6 +42,7 @@ public class ReportPostService {
 		this.feedItemGuidService = feedItemGuidService;
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
 		httpFetcher = new HttpFetcher();
+		htmlCleaner = new HtmlCleaner();
 	}
 	
 	public int postReports(List<FeedItem> feedItems, String user, String noticeboard, Double defaultLatitude, Double defaultLongitude) {
@@ -60,7 +64,8 @@ public class ReportPostService {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
 						final ImageFile imageFile = feedItem.getImageUrl() != null ? fetchRemoteImage(feedItem.getImageUrl()) : null;
-						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), latitude, longitude, feedItem.getBody(), feedItem.getLink(), imageFile, noticeboard, new DateTime(feedItem.getDate()));
+						final String body = makeBody(feedItem);
+						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), latitude, longitude, body, feedItem.getLink(), imageFile, noticeboard, new DateTime(feedItem.getDate()));
 						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard, postedReport);
 						importedCount++;
 					
@@ -85,6 +90,10 @@ public class ReportPostService {
 		}
         
         return importedCount;
+	}
+
+	private String makeBody(FeedItem feedItem) {
+		return htmlCleaner.stripHtml(feedItem.getBody());
 	}
 
 	private ImageFile fetchRemoteImage(String imageUrl) {

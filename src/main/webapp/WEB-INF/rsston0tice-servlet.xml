@@ -37,6 +37,8 @@
 		<property name="resourceLoaderPath" value="/WEB-INF/velocity" />
 	</bean>
 
+	<bean id="htmlCleaner" class="uk.co.eelpieconsulting.common.html.HtmlCleaner" />
+	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
 		<property name="cache" value="true" />
 		<property name="prefix" value="" />
@@ -47,7 +49,8 @@
 		<property name="toolboxConfigLocation" value="/WEB-INF/velocity/toolbox.xml"/>		
 		<property name="attributesMap">
 			<map>
-				<entry key="urlBuilder" value-ref="urlBuilder" />			
+				<entry key="urlBuilder" value-ref="urlBuilder" />
+				<entry key="htmlCleaner" value-ref="htmlCleaner" />								
 			</map>
 		</property>
 	</bean>

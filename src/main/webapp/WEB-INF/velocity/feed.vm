@@ -67,6 +67,11 @@
 					#end
 					</p>					
 				#end
+				
+				<p class="itemBody">				
+					<pre>$htmlCleaner.stripHtml($feeditem.body)</pre>
+				</p>
+								
 			</li>
 		#end
 	</ul>

@@ -35,7 +35,11 @@ public class FeedItemWithHistory {
 	public boolean isGeoTagged() {
 		return feedItem.isGeoTagged();
 	}
-
+	
+	public String getBody() {
+		return feedItem.getBody();
+	}
+	
 	public boolean hasHistory() {
 		return feedItemHistory != null;
 	}
