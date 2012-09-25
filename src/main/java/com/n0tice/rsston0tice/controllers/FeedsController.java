@@ -184,7 +184,7 @@ public class FeedsController {
 		mv.addObject("feedNumber", feedNumber);
         List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
         if (feedItems != null) {
-        	mv.addObject("feeditems", feedItemHistoryService.decorateFeedItemsWithHistory(feedItems, loggedInUserFilter.getLoggedInUser(), feed.getNoticeboard()));
+        	mv.addObject("feeditems", feedItemHistoryService.decorateFeedItemsWithHistory(feedItems, loggedInUserFilter.getLoggedInUser()));
         }
         return mv;
     }

@@ -27,16 +27,15 @@ public class FeedItemHistoryDAO {
 		datastore.save(new FeedItemHistory(user, guid, noticeboard, DateTime.now().toDate(), postedReport.getId(), postedReport.getWebUrl()));
 	}
 	
-	public boolean hasBeenImportedAlready(String user, String guid, String noticeboard) {
-		final Query<FeedItemHistory> q = buildFeedItemHistoryQuery(user, guid, noticeboard);		
+	public boolean hasBeenImportedAlready(String user, String guid) {
+		final Query<FeedItemHistory> q = buildFeedItemHistoryQuery(user, guid);		
 		return q.countAll() > 0;
 	}
 	
-	public FeedItemHistory getHistoryFor(String user, String guid, String noticeboard) {
+	public FeedItemHistory getHistoryFor(String user, String guid) {
 		final Query<FeedItemHistory> q = datastore.createQuery(FeedItemHistory.class).
 				field("user").equal(user).
-				field("guid").equal(guid).
-				field("noticeboard").equal(noticeboard);
+				field("guid").equal(guid);
 		
 		final List<FeedItemHistory> asList = q.asList();
 		if (q.asList().isEmpty()) {
@@ -45,11 +44,10 @@ public class FeedItemHistoryDAO {
 		return asList.get(0);
 	}
 	
-	private Query<FeedItemHistory> buildFeedItemHistoryQuery(String user, String guid, String noticeboard) {
+	private Query<FeedItemHistory> buildFeedItemHistoryQuery(String user, String guid) {
 		return datastore.createQuery(FeedItemHistory.class).
 				field("user").equal(user).
-				field("guid").equal(guid).
-				field("noticeboard").equal(noticeboard);
+				field("guid").equal(guid);
 	}
 
 	public void removeHistoryForNoticeId(String n0ticeId) {

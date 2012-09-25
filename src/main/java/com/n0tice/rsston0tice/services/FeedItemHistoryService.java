@@ -24,10 +24,10 @@ public class FeedItemHistoryService {
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
 	}
 	
-	public List<FeedItemWithHistory> decorateFeedItemsWithHistory(List<FeedItem> feedItems, String user, String noticeboard) {
+	public List<FeedItemWithHistory> decorateFeedItemsWithHistory(List<FeedItem> feedItems, String user) {
 		final List<FeedItemWithHistory> feedItemsWithHistory = new ArrayList<FeedItemWithHistory>();
 		for (FeedItem feedItem : feedItems) {
-			final FeedItemHistory feedItemHistory = feedItemHistoryDAO.getHistoryFor(user, feedItemGuidService.getGuidFor(feedItem), noticeboard);
+			final FeedItemHistory feedItemHistory = feedItemHistoryDAO.getHistoryFor(user, feedItemGuidService.getGuidFor(feedItem));
 			feedItemsWithHistory.add(new FeedItemWithHistory(feedItem, feedItemHistory));
 		}
 		return feedItemsWithHistory;

@@ -60,7 +60,7 @@ public class ReportPostService {
 			final boolean isFeedItemPositioned = latitude != null && longitude != null;
 			if (isFeedItemPositioned) {				
 				final String feedItemGuid = feedItemGuidService.getGuidFor(feedItem);
-				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid, noticeboard)) {
+				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid)) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
 						final ImageFile imageFile = feedItem.getImageUrl() != null ? fetchRemoteImage(feedItem.getImageUrl()) : null;
