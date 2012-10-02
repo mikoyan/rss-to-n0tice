@@ -14,8 +14,7 @@
        	http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd
        	http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-3.0.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-       	"        
-        >
+       	">
         
 	<context:annotation-config />
    	<context:component-scan base-package="com.n0tice.rsston0tice" />
@@ -39,6 +38,8 @@
 
 	<bean id="htmlCleaner" class="uk.co.eelpieconsulting.common.html.HtmlCleaner" />
 	
+	<bean id="dateFormatter" class="uk.co.eelpieconsulting.common.dates.DateFormatter" />
+	
 	<bean id="viewResolver" class="org.springframework.web.servlet.view.velocity.VelocityViewResolver">
 		<property name="cache" value="true" />
 		<property name="prefix" value="" />
@@ -49,8 +50,9 @@
 		<property name="toolboxConfigLocation" value="/WEB-INF/velocity/toolbox.xml"/>		
 		<property name="attributesMap">
 			<map>
+				<entry key="dateFormatter" value-ref="dateFormatter" />											
 				<entry key="urlBuilder" value-ref="urlBuilder" />
-				<entry key="htmlCleaner" value-ref="htmlCleaner" />								
+				<entry key="htmlCleaner" value-ref="htmlCleaner" />
 			</map>
 		</property>
 	</bean>

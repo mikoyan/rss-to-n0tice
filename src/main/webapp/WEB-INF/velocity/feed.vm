@@ -41,7 +41,7 @@
 						to $escape.html($feeditem.importNoticeboard)
 					#end					
 					#if($feeditem.importDate)  
-						on $feeditem.importDate
+						$dateFormatter.timeSince($feeditem.importDate) $feeditem.importDate
 					#end
 					#if($feeditem.n0ticeWebUrl)
 						- <a href="$feeditem.n0ticeWebUrl")>Link</a>

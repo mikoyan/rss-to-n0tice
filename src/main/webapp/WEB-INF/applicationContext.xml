@@ -14,5 +14,5 @@
 
 	<context:annotation-config />
 	<util:properties id="rsston0tice" location="classpath:rsston0tice.properties" />
-			
+				
 </beans>
