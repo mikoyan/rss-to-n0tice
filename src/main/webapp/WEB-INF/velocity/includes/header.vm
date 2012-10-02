@@ -1,0 +1,18 @@
+<head>
+<style>
+	.feeditem {
+		padding-bottom: 10pt;
+	}
+</style>
+</head>
+<body>
+
+<h4>Feed to n0tice</h4>
+
+<p>
+#if ($loggedInUsername) 
+	Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
+#else
+	<a href="$urlBuilder.loginUrl">Login</a>
+#end
+</p>
