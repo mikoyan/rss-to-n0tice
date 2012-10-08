@@ -5,10 +5,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import uk.co.eelpieconsulting.common.caching.CachableService;
+
 import com.n0tice.rsston0tice.model.FeedItem;
+import com.n0tice.rsston0tice.model.FetchedFeed;
 import com.sun.syndication.feed.module.georss.GeoRSSModule;
 import com.sun.syndication.feed.module.georss.GeoRSSUtils;
 import com.sun.syndication.feed.module.mediarss.MediaEntryModuleImpl;
@@ -19,21 +23,28 @@ import com.sun.syndication.feed.synd.SyndFeed;
 import com.sun.syndication.fetcher.impl.HttpURLFeedFetcher;
 
 @Component
-public class FeedFetcher {
+public class FeedFetcher implements CachableService<String, FetchedFeed> {
 	
 	private static Logger log = Logger.getLogger(FeedFetcher.class);
 	
-	public String getFeedTitle(String url) {
-		final SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
-    	if (syndfeed == null) {
-    		log.warn("Could not load syndfeed from url: " + url + ". Returning empty list of items");
-    		return null;
-    	}
-    	
-    	return syndfeed.getTitle();
+	private static final int ONE_HOUR = 60 * 60;
+	
+	@Override
+	public FetchedFeed callService(String url) {
+		return getFeedItems(url);
+	}
+
+	@Override
+	public String getCacheKeyFor(String url) {
+		return "rsston0ticefeed" + DigestUtils.md5Hex(url);
+	}
+
+	@Override
+	public int getTTL() {
+		return ONE_HOUR;
 	}
 	
-	public List<FeedItem> getFeedItems(String url) {
+	public FetchedFeed getFeedItems(String url) {
 		final List<FeedItem> feedItems = new ArrayList<FeedItem>();
     	final SyndFeed syndfeed = loadSyndFeedWithFeedFetcher(url);
     	if (syndfeed == null) {
@@ -60,7 +71,7 @@ public class FeedFetcher {
 			feedItems.add(new FeedItem(syndEntry.getTitle(), syndEntry.getUri(), body, syndEntry.getLink(), syndEntry.getPublishedDate(), latitude, longitude, imageUrl));
         }
         
-        return feedItems;
+        return new FetchedFeed(syndfeed.getTitle(), feedItems);
 	}
 		
 	private SyndFeed loadSyndFeedWithFeedFetcher(String feedUrl) {
@@ -118,5 +129,5 @@ public class FeedFetcher {
 		}		
 		return mediaContent.getWidth() > selectedMediaContent.getWidth();		
 	}
-
+	
 }

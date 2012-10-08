@@ -21,7 +21,7 @@ import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
 import com.n0tice.rsston0tice.daos.FeedDAO;
-import com.n0tice.rsston0tice.feeds.FeedFetcher;
+import com.n0tice.rsston0tice.feeds.FeedService;
 import com.n0tice.rsston0tice.model.Feed;
 import com.n0tice.rsston0tice.model.FeedItem;
 import com.n0tice.rsston0tice.model.forms.EditFeedForm;
@@ -38,18 +38,18 @@ public class FeedsController {
 	private LoggedInUserFilter loggedInUserFilter;
 	private FeedDAO feedDAO;
 	private UrlBuilder urlBuilder;
-	private FeedFetcher feedFetcher;
+	private FeedService feedService;
 	private FeedItemHistoryService feedItemHistoryService;
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedImportService feedImportService;
 	private TakeDownService takeDownService;
 	
 	@Autowired
-	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedFetcher feedFetcher, FeedItemHistoryService feedItemHistoryService, N0ticeApiFactory n0ticeApiFactory, FeedImportService feedImportService, TakeDownService takeDownService) {
+	public FeedsController(LoggedInUserFilter loggedInUserFilter, FeedDAO feedDAO, UrlBuilder urlBuilder, FeedService feedService, FeedItemHistoryService feedItemHistoryService, N0ticeApiFactory n0ticeApiFactory, FeedImportService feedImportService, TakeDownService takeDownService) {
 		this.loggedInUserFilter = loggedInUserFilter;
 		this.feedDAO = feedDAO;
 		this.urlBuilder = urlBuilder;
-		this.feedFetcher = feedFetcher;
+		this.feedService = feedService;
 		this.feedItemHistoryService = feedItemHistoryService;
 		this.n0ticeApiFactory = n0ticeApiFactory;
 		this.feedImportService = feedImportService;
@@ -79,7 +79,7 @@ public class FeedsController {
 		if (!result.hasErrors()) {
 			final Feed feed = new Feed(
 					loggedInUserFilter.getLoggedInUser(),
-					feedFetcher.getFeedTitle(feedForm.getUrl()),
+					feedService.getFeedTitle(feedForm.getUrl()),
 					feedForm.getUrl(),
 					feedForm.getNoticeboard() != null && !feedForm.getNoticeboard().trim().isEmpty() ? feedForm.getNoticeboard() : null,
 					feedForm.isScheduled(),
@@ -182,7 +182,7 @@ public class FeedsController {
         final Feed feed = feedDAO.getFeedsForUser(loggedInUserFilter.getLoggedInUser()).get(feedNumber - 1);
 		mv.addObject("feed", feed);
 		mv.addObject("feedNumber", feedNumber);
-        List<FeedItem> feedItems = feedFetcher.getFeedItems(feed.getUrl());
+        List<FeedItem> feedItems = feedService.getFeedItems(feed.getUrl());
         if (feedItems != null) {
         	mv.addObject("feeditems", feedItemHistoryService.decorateFeedItemsWithHistory(feedItems, loggedInUserFilter.getLoggedInUser()));
         }
@@ -223,14 +223,11 @@ public class FeedsController {
 		try {
 			mv.addObject("noticeboards", n0ticeApiFactory.getReadOnlyApi().noticeboards(loggedInUserFilter.getLoggedInUser()));
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (ParsingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		} catch (HttpFetchException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error(e);
 		}
 	}
 	

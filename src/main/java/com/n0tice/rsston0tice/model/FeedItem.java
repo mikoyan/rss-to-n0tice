@@ -1,8 +1,11 @@
 package com.n0tice.rsston0tice.model;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class FeedItem {
+public class FeedItem implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	private final String title;
 	private final String uri;

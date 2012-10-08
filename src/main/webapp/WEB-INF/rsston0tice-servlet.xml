@@ -17,7 +17,7 @@
        	">
         
 	<context:annotation-config />
-   	<context:component-scan base-package="com.n0tice.rsston0tice" />
+   	<context:component-scan base-package="com.n0tice.rsston0tice,uk.co.eelpieconsulting.common" />
  	
  	<mvc:annotation-driven />
 	<mvc:default-servlet-handler />
