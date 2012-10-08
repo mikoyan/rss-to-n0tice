@@ -1,6 +1,6 @@
 #parse('includes/header.vm')
  
-<h5>Edit feed</h5>
+<h4>Edit feed</h4>
 
 <form action="$urlBuilder.getFeedUrl($feedNumber)/edit" method="POST">
 
@@ -38,17 +38,19 @@
 	</p>
 		
 	#springBind( "feed.scheduled" )
-	Scheduled: 
+	
+	<p>Scheduled: 
 		<input type="hidden" name="_${status.expression}" value="$!status.value" />	
 		<input type="checkbox" name="${status.expression}" value="true" #if(${status.value} == true) checked #end>
 	<br/>
+	Scheduled feeds will be automatically imported into n0tice on a regular basis
+	</p>
 			
-	<input type="submit" value="Update feed" />
-	
+	<input type="submit" value="Update feed" class="btn btn-primary" />	
 </form>
 
 <form action="$urlBuilder.getFeedUrl($feedNumber)" method="GET">
-	<input type="submit" value="Cancel" />	
+	<input type="submit" value="Cancel" class="btn btn-primary" />	
 </form>
-
+	
 #parse('includes/footer.vm')

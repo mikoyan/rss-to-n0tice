@@ -1,9 +1,8 @@
 #parse('includes/header.vm')
 
-<h5>Feed: #if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</h5>
+#parse('includes/feedheading.vm')
 
-<p>$importedCount items imported to $escape.html($feed.noticeboard)</p>
-
-<a href="$urlBuilder.getFeedUrl($feedNumber)">Back to feed</a>
+<p>$importedCount items imported to #parse('includes/noticeboard.vm')</p>
+<a href="$urlBuilder.getFeedUrl($feedNumber)"><button class="btn btn-primary">Back to feed</button></a>
 
 #parse('includes/footer.vm')

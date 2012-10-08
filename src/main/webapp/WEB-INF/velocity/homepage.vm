@@ -1,12 +1,19 @@
 #parse('includes/header.vm')
-
+	
 #if ($loggedInUsername)
 
 	#if($feeds && $feeds.size() > 0) 
-		<p>Your feeds:<p>
+		<h4>Your feeds</h4>
 		<ul>
 			#foreach ($feed in $feeds)
-				<li><a href="$urlBuilder.getFeedUrl($velocityCount)">#if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</a></li>
+				<li><a href="$urlBuilder.getFeedUrl($velocityCount)">
+					#if($feed.title)
+						$escape.html($feed.title)
+					#else
+						$escape.html($feed.url)
+					#end
+					</a>
+					</li>
 			#end
 		</ul>
 	
@@ -14,8 +21,10 @@
 		<p>You have no feeds setup for import into n0tice.</p>
 	#end
 	
-	<p><a href="$urlBuilder.newFeedUrl">Add a new feed</a>
+	<p><a href="$urlBuilder.newFeedUrl"><button class="btn btn-primary" type="button">Add a new feed</button></a>
 
+#else
+	<p><a href="$urlBuilder.loginUrl">Login</a> with your n0tice account to import feed items into your noticeboards.</p>
 #end
 
 #parse('includes/footer.vm')

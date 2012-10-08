@@ -1,18 +1,33 @@
 <head>
-<style>
-	.feeditem {
-		padding-bottom: 10pt;
-	}
-</style>
+ <link href="/bootstrap/css/bootstrap.css" rel="stylesheet" />
 </head>
 <body>
 
-<h4>Feed to n0tice</h4>
+<div class="row">
+	<div class="span3">
+	</div>
+	
+	<div class="span5">
+		<h2>Feed to n0tice</h2>
+	</div>
+	
+	<div class="span3">
+			#if ($loggedInUsername)
+			        Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
+			#end			      
+	</div>
+	
+</div>
 
-<p>
-#if ($loggedInUsername) 
-	Logged in as: $escape.html($loggedInUsername) | <a href="$urlBuilder.logoutUrl">Logout</a>
-#else
-	<a href="$urlBuilder.loginUrl">Login</a>
-#end
-</p>
+<div class="row">
+	
+	<div class="span3 bs-docs-sidebar">
+		#if ($loggedInUsername)
+			<ul class="nav nav-list bs-docs-sidenav affix">
+    	      <li class=""><a href="$urlBuilder.getHomepageUrl()"><i class="icon-chevron-right"></i> Your feeds</a></li>
+    	      <li class=""><a href="$urlBuilder.newFeedUrl"><i class="icon-chevron-right"></i> Add new feed</a></li>  
+    	    </ul>
+   		#end
+	</div>
+
+	<div class="span8">

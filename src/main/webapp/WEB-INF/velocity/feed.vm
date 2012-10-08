@@ -1,15 +1,16 @@
 #parse('includes/header.vm')
+ 
+<p align="right"><a href="$urlBuilder.getFeedUrl($feedNumber)/edit"><button class="btn btn-primary" type="button">Edit</button></a>
+<a href="$urlBuilder.getFeedUrl($feedNumber)/delete"><button class="btn btn-primary" type="button">Delete</button></a></p>
 
-<h5>Feed: #if($feed.title) $escape.html($feed.title) - #end $escape.html($feed.url)</h5>
+#parse('includes/feedheading.vm')
 
-<p><a href="$urlBuilder.getFeedUrl($feedNumber)/edit">Edit</a></p>
+#if($feed.noticeboard)
+        <p>Importing to #parse('includes/noticeboard.vm')</p>
+#end
 
-<p><a href="$urlBuilder.getFeedUrl($feedNumber)/delete">Delete</a></p>
-
-<p>Scheduled: $feed.scheduled</p>
-
-#if($feed.noticeboard) 
-	<p>Importing to $escape.html($feed.noticeboard)</p>
+#if($feed.scheduled)
+        <p>Scheduled import is selected.<br/> Geotagged items from this feed will be imported automatically</p>
 #end
 
 #if($feed.defaultPosition)
@@ -21,7 +22,7 @@
 	<ul class="feeditems">
 		#foreach ($feeditem in $feeditems)
 			<li class="feeditem">			
-				$escape.html($feeditem.title)
+				<h5>$escape.html($feeditem.title)</h5>
 								
 				#if ($feeditem.geoTagged) 
 					<br />$feeditem.latitude - $feeditem.longitude
@@ -38,7 +39,7 @@
 				#if ($feeditem.hasHistory()) 
 					<p>Imported
 					#if($feeditem.importNoticeboard)  
-						to $escape.html($feeditem.importNoticeboard)
+						to <span class="label label-info">${escape.html($feeditem.importNoticeboard)}.n0tice.com</span>						
 					#end					
 					#if($feeditem.importDate)  
 						$dateFormatter.timeSince($feeditem.importDate)
@@ -61,11 +62,11 @@
 	</ul>
 
 	<form action="$urlBuilder.getFeedUrl($feedNumber)/import" method="POST">
-		<input type="submit" value="Import geotagged feed items" />	
+		<input type="submit" value="Import geotagged feed items" class="btn btn-primary"/>	
 	<form>
 				
 #else
 	<p>No feed items could be loaded from this feed.</p>
 #end
-
+		
 #parse('includes/footer.vm')
