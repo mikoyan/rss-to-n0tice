@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import uk.co.eelpieconsulting.common.caching.CachableService;
@@ -27,7 +28,8 @@ public class FeedFetcher implements CachableService<String, FetchedFeed> {
 	
 	private static Logger log = Logger.getLogger(FeedFetcher.class);
 	
-	private static final int ONE_HOUR = 60 * 60;
+    @Value("#{rsston0tice['fetchInterval']}")
+	private int ttl;
 	
 	@Override
 	public FetchedFeed callService(String url) {
@@ -41,7 +43,7 @@ public class FeedFetcher implements CachableService<String, FetchedFeed> {
 
 	@Override
 	public int getTTL() {
-		return ONE_HOUR;
+		return ttl;
 	}
 	
 	public FetchedFeed getFeedItems(String url) {

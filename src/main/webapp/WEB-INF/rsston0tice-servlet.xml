@@ -64,10 +64,17 @@
 		<property name="concurrent" value="false" />
 	</bean>
 
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location">
+			<value>classpath:rsston0tice.properties</value>
+		</property>
+	</bean>
+        
+
 	<bean id="scheduledImportTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
 		<property name="jobDetail" ref="scheduledImportRunner" />
 		<property name="startDelay" value="60000" />
-		<property name="repeatInterval" value="3600000" />
+		<property name="repeatInterval" value="${fetchInterval}000" />
 	</bean>
 
 	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
