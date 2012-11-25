@@ -110,12 +110,12 @@ public class FeedFetcher implements CachableService<String, FetchedFeed> {
 			}
 			
 			if (selectedMediaContent != null) {
-				log.info("Took image reference from MediaContent: " + selectedMediaContent.getReference().toString());
+				log.debug("Took image reference from MediaContent: " + selectedMediaContent.getReference().toString());
 				return selectedMediaContent.getReference().toString();
 			}
 		}
 
-		log.info("No suitable media element image seen");
+		log.debug("No suitable media element image seen");
 		return null;
 	}
 

@@ -84,7 +84,7 @@ public class ReportPostService {
 					}
 				
 				} else {
-					log.info("Skipping previously imported item: " + feedItem.getTitle());
+					log.debug("Skipping previously imported item: " + feedItem.getTitle());
 				}
 			}
 		}

@@ -3,6 +3,8 @@ package com.n0tice.rsston0tice.api;
 import java.util.List;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -26,6 +28,7 @@ public class ScheduledImportTask implements Runnable {
 	
 	public void run() {
 		log.info("Starting scheduled import");
+		final DateTime startTime = DateTime.now();
 
 		final List<Feed> allScheduledFeeds = feedDAO.getAllScheduledFeeds();
 		log.info(allScheduledFeeds.size() + " scheduled feeds to import");
@@ -33,7 +36,8 @@ public class ScheduledImportTask implements Runnable {
 			feedImportService.importFeed(feed);
 		}
 		
-		log.info("Finished scheduled import");
+		final Duration duration = new Duration(startTime.getMillis(), DateTime.now().getMillis());
+		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds() + " seconds");
 	}
 	
 }
