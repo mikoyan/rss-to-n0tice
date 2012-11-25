@@ -1,0 +1,1 @@
+<span class="label label-info">${escape.html($feed.noticeboard)}.n0tice.com</span>

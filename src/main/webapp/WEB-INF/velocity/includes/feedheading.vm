@@ -1,0 +1,6 @@
+#if($feed.title)
+	<h4>$escape.html($feed.title)</h4>
+	<p class="address">$escape.html($feed.url)</p>
+#else 
+	<h4>$escape.html($feed.url)</h4>
+#end
