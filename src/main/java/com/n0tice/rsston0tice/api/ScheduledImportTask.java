@@ -6,6 +6,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.joda.time.Duration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Component;
 
 import com.n0tice.rsston0tice.daos.FeedDAO;
@@ -19,11 +20,13 @@ public class ScheduledImportTask implements Runnable {
 	
 	private FeedDAO feedDAO;
 	private FeedImportService feedImportService;
-	
+	private TaskExecutor taskExecutor;
+	  
 	@Autowired
-	public ScheduledImportTask(FeedDAO feedDAO, FeedImportService feedImportService) {
+	public ScheduledImportTask(FeedDAO feedDAO, FeedImportService feedImportService, TaskExecutor taskExecutor) {
 		this.feedDAO = feedDAO;
 		this.feedImportService = feedImportService;
+		this.taskExecutor = taskExecutor;
 	}
 	
 	public void run() {
@@ -33,11 +36,27 @@ public class ScheduledImportTask implements Runnable {
 		final List<Feed> allScheduledFeeds = feedDAO.getAllScheduledFeeds();
 		log.info(allScheduledFeeds.size() + " scheduled feeds to import");
 		for (Feed feed : allScheduledFeeds) {
-			feedImportService.importFeed(feed);
+			taskExecutor.execute(new ProcessFeedTask(feedImportService, feed));
 		}
 		
 		final Duration duration = new Duration(startTime.getMillis(), DateTime.now().getMillis());
 		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds() + " seconds");
 	}
 	
+	private class ProcessFeedTask implements Runnable {
+		
+		private Feed feed;
+		private FeedImportService feedImportService;
+		
+		public ProcessFeedTask(FeedImportService feedImportService, Feed feed) {
+			this.feedImportService = feedImportService;
+			this.feed = feed;
+		}
+		
+		public void run() {
+			log.info("Processing feed: " + feed);
+			feedImportService.importFeed(feed);
+		}		
+	} 
+		
 }

@@ -15,5 +15,12 @@
 	<context:annotation-config />
 	<util:properties id="rsston0tice" location="classpath:rsston0tice.properties" />
 	<util:properties id="config" location="classpath:rsston0tice.properties" />
-				
+
+	<bean id="taskExecutor"
+		class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="5" />
+		<property name="maxPoolSize" value="10" />
+		<property name="queueCapacity" value="25" />
+	</bean>
+					
 </beans>
