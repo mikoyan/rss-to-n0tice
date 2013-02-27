@@ -24,6 +24,7 @@ import com.n0tice.api.client.model.MediaFile;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
 import com.n0tice.rsston0tice.feeds.FeedItemGuidService;
 import com.n0tice.rsston0tice.model.FeedItem;
+import com.n0tice.rsston0tice.services.BlockedUserService;
 
 @Component
 public class ReportPostService {
@@ -33,15 +34,17 @@ public class ReportPostService {
 	private N0ticeApiFactory n0ticeApiFactory;
 	private FeedItemGuidService feedItemGuidService;
 	private FeedItemHistoryDAO feedItemHistoryDAO;
-	private HttpFetcher httpFetcher;
+	private BlockedUserService blockedUserService;	
 
-	private HtmlCleaner htmlCleaner;	
+	private HttpFetcher httpFetcher;
+	private HtmlCleaner htmlCleaner;
 	
 	@Autowired
-	public ReportPostService(N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO) {
+	public ReportPostService(N0ticeApiFactory n0ticeApiFactory, FeedItemGuidService feedItemGuidService, FeedItemHistoryDAO feedItemHistoryDAO, BlockedUserService blockedUserService) {
 		this.n0ticeApiFactory = n0ticeApiFactory;
 		this.feedItemGuidService = feedItemGuidService;
 		this.feedItemHistoryDAO = feedItemHistoryDAO;
+		this.blockedUserService = blockedUserService;
 		httpFetcher = new HttpFetcher();
 		htmlCleaner = new HtmlCleaner();
 	}
@@ -75,7 +78,9 @@ public class ReportPostService {
 					} catch (ParsingException e) {
 						log.warn(e);
 					} catch (AuthorisationException e) {
-						log.warn(e);
+						log.warn("User failed to authenticate with the n0tice api; blocking: " + user);
+						blockedUserService.blockUser(user);
+						
 					} catch (IOException e) {
 						log.warn(e);
 					} catch (NotAllowedException e) {

@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.n0tice.rsston0tice.daos.FeedDAO;
 import com.n0tice.rsston0tice.model.Feed;
+import com.n0tice.rsston0tice.services.BlockedUserService;
 import com.n0tice.rsston0tice.services.FeedImportService;
 
 @Component
@@ -19,12 +20,14 @@ public class ScheduledImportTask implements Runnable {
 	private static Logger log = Logger.getLogger(ScheduledImportTask.class);
 	
 	private FeedDAO feedDAO;
+	private BlockedUserService blockedUserService;
 	private FeedImportService feedImportService;
 	private TaskExecutor taskExecutor;
-	  
+	
 	@Autowired
-	public ScheduledImportTask(FeedDAO feedDAO, FeedImportService feedImportService, TaskExecutor taskExecutor) {
+	public ScheduledImportTask(FeedDAO feedDAO, BlockedUserService blockedUserService, FeedImportService feedImportService, TaskExecutor taskExecutor) {
 		this.feedDAO = feedDAO;
+		this.blockedUserService = blockedUserService;
 		this.feedImportService = feedImportService;
 		this.taskExecutor = taskExecutor;
 	}
@@ -36,13 +39,22 @@ public class ScheduledImportTask implements Runnable {
 		final List<Feed> allScheduledFeeds = feedDAO.getAllScheduledFeeds();
 		log.info(allScheduledFeeds.size() + " scheduled feeds to import");
 		for (Feed feed : allScheduledFeeds) {
-			taskExecutor.execute(new ProcessFeedTask(feedImportService, feed));
+			if (isBlockedUser(feed.getUser())) {
+				log.warn("Skipping feed belonging to blocked user: " + feed.getTitle() + ", " + feed.getUser());
+				
+			} else {
+				taskExecutor.execute(new ProcessFeedTask(feedImportService, feed));
+			}
 		}
 		
 		final Duration duration = new Duration(startTime.getMillis(), DateTime.now().getMillis());
 		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds() + " seconds");
 	}
 	
+	private boolean isBlockedUser(String user) {
+		return blockedUserService.isBlocked(user);
+	}
+
 	private class ProcessFeedTask implements Runnable {
 		
 		private Feed feed;

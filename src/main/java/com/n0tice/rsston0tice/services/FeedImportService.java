@@ -25,7 +25,7 @@ public class FeedImportService {
 		this.reportPostService = reportPostService;
 	}
 	
-	public int importFeed(Feed feed) {
+	public int importFeed(Feed feed) {		
 		log.info("Importing feed: " + feed.toString());
 		try {
 			final List<FeedItem> feedItems = feedService.getFeedItems(feed.getUrl());
