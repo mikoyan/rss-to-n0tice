@@ -15,11 +15,12 @@ import uk.co.eelpieconsulting.common.http.HttpFetcher;
 import com.n0tice.api.client.N0ticeApi;
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.BadRequestException;
+import com.n0tice.api.client.exceptions.N0ticeException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.api.client.exceptions.ParsingException;
 import com.n0tice.api.client.model.Content;
-import com.n0tice.api.client.model.ImageFile;
+import com.n0tice.api.client.model.MediaFile;
 import com.n0tice.rsston0tice.daos.FeedItemHistoryDAO;
 import com.n0tice.rsston0tice.feeds.FeedItemGuidService;
 import com.n0tice.rsston0tice.model.FeedItem;
@@ -63,9 +64,9 @@ public class ReportPostService {
 				if (!feedItemHistoryDAO.hasBeenImportedAlready(user, feedItemGuid)) {
 					log.info("Importing item: " + feedItem.getTitle());
 					try {
-						final ImageFile imageFile = feedItem.getImageUrl() != null ? fetchRemoteImage(feedItem.getImageUrl()) : null;
+						final MediaFile imageFile = feedItem.getImageUrl() != null ? fetchRemoteImage(feedItem.getImageUrl()) : null;
 						final String body = makeBody(feedItem);
-						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), latitude, longitude, body, feedItem.getLink(), imageFile, noticeboard, new DateTime(feedItem.getDate()));
+						final Content postedReport = n0ticeApi.postReport(feedItem.getTitle(), latitude, longitude, body, feedItem.getLink(), imageFile, null, noticeboard, new DateTime(feedItem.getDate()));
 						feedItemHistoryDAO.markAsImported(user, feedItemGuid, noticeboard, postedReport);
 						importedCount++;
 					
@@ -80,6 +81,8 @@ public class ReportPostService {
 					} catch (NotAllowedException e) {
 						log.warn(e);
 					} catch (BadRequestException e) {
+						log.warn(e);
+					} catch (N0ticeException e) {
 						log.warn(e);
 					}
 				
@@ -96,10 +99,10 @@ public class ReportPostService {
 		return htmlCleaner.stripHtml(feedItem.getBody());
 	}
 
-	private ImageFile fetchRemoteImage(String imageUrl) {
+	private MediaFile fetchRemoteImage(String imageUrl) {
 		log.info("Fetching remote image from: " + imageUrl);
-		try {
-			final ImageFile imageFile = new ImageFile(httpFetcher.getBytes(imageUrl), "image.jpg");
+		try {			
+			final MediaFile imageFile = new MediaFile(httpFetcher.getBytes(imageUrl), "image.jpg");
 			log.info("Finished fetching image from: " + imageUrl);
 			return imageFile;	// TODO extract image name from url.			
 		} catch (HttpFetchException e) {

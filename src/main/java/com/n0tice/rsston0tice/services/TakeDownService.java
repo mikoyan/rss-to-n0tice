@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 import com.n0tice.api.client.N0ticeApi;
 import com.n0tice.api.client.exceptions.AuthorisationException;
 import com.n0tice.api.client.exceptions.BadRequestException;
+import com.n0tice.api.client.exceptions.N0ticeException;
 import com.n0tice.api.client.exceptions.NotAllowedException;
 import com.n0tice.api.client.exceptions.NotFoundException;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
@@ -39,17 +40,15 @@ public class TakeDownService {
 			feedItemHistoryDAO.removeHistoryForNoticeId(n0ticeId);
 			
 		} catch (NotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e);
 		} catch (NotAllowedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e);
 		} catch (AuthorisationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e);
 		} catch (BadRequestException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.warn(e);
+		} catch (N0ticeException e) {
+			log.warn(e);
 		}
 		
 		log.info("Done");
