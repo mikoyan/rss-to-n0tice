@@ -1,0 +1,11 @@
+Package: feed-to-notice
+Version: %VERSION%
+Depends: tomcat6, apache2
+Section: notice
+Priority: optional
+Architecture: all
+Essential: no
+Installed-Size: 1024
+Maintainer: Tony McCrae [tony@eelpieconsulting.co.uk]
+Provides: feed-to-notice
+Description: Feed to n0tice service
