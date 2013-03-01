@@ -50,6 +50,7 @@
 				<configuration>
 					<port>9090</port>
 					<path>/</path>
+					<useTestClasspath>true</useTestClasspath>
 				</configuration>
 			</plugin>
 		</plugins>
