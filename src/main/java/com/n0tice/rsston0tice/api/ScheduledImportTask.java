@@ -48,7 +48,7 @@ public class ScheduledImportTask implements Runnable {
 		}
 		
 		final Duration duration = new Duration(startTime.getMillis(), DateTime.now().getMillis());
-		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds() + " seconds");
+		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds().getSeconds() + " seconds");
 	}
 	
 	private boolean isBlockedUser(String user) {
