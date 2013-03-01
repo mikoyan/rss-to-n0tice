@@ -34,8 +34,8 @@ public class FeedItemHistoryDAO {
 	
 	public FeedItemHistory getHistoryFor(String user, String guid) {
 		final Query<FeedItemHistory> q = datastore.createQuery(FeedItemHistory.class).
-				field("user").equal(user).
-				field("guid").equal(guid);
+				field("guid").equal(guid).
+				field("user").equal(user);
 		
 		final List<FeedItemHistory> asList = q.asList();
 		if (q.asList().isEmpty()) {
