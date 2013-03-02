@@ -37,18 +37,23 @@ public class ScheduledImportTask implements Runnable {
 		final DateTime startTime = DateTime.now();
 
 		final List<Feed> allScheduledFeeds = feedDAO.getAllScheduledFeeds();
-		log.info(allScheduledFeeds.size() + " scheduled feeds to import");
+		final int numberOfFeeds = allScheduledFeeds.size();
+		log.info(numberOfFeeds + " scheduled feeds to import");
+		int counter = 0;
 		for (Feed feed : allScheduledFeeds) {
+			counter++;
+			log.info("Processing feed " + counter + "/" + numberOfFeeds);
 			if (isBlockedUser(feed.getUser())) {
 				log.warn("Skipping feed belonging to blocked user: " + feed.getTitle() + ", " + feed.getUser());
 				
 			} else {
+				
 				taskExecutor.execute(new ProcessFeedTask(feedImportService, feed));
 			}
 		}
 		
 		final Duration duration = new Duration(startTime.getMillis(), DateTime.now().getMillis());
-		log.info("Finished scheduled import - imported " + allScheduledFeeds.size() + " in " + duration.toStandardSeconds().getSeconds() + " seconds");
+		log.info("Finished scheduled import - imported " + numberOfFeeds + " in " + duration.toStandardSeconds().getSeconds() + " seconds");
 	}
 	
 	private boolean isBlockedUser(String user) {
