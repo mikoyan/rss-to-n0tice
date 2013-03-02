@@ -1,6 +1,6 @@
 Package: feed-to-notice
 Version: %VERSION%
-Depends: tomcat6, apache2
+Depends: tomcat6, apache2, memcached
 Section: notice
 Priority: optional
 Architecture: all
