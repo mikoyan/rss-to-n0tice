@@ -1,6 +1,5 @@
 package com.n0tice.rsston0tice.signin;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -126,8 +125,6 @@ public class N0ticeOauthSigninHandler implements SigninHandler {
 					} catch (ParsingException e) {
 						log.warn(e);
 					} catch (AuthorisationException e) {
-						log.warn(e);
-					} catch (IOException e) {
 						log.warn(e);
 					} catch (NotAllowedException e) {
 						log.warn(e);

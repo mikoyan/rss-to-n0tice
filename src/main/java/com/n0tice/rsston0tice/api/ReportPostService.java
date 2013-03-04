@@ -1,6 +1,5 @@
 package com.n0tice.rsston0tice.api;
 
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -79,10 +78,7 @@ public class ReportPostService {
 						log.warn(e);
 					} catch (AuthorisationException e) {
 						log.warn("User failed to authenticate with the n0tice api; blocking: " + user);
-						blockedUserService.blockUser(user);
-						
-					} catch (IOException e) {
-						log.warn(e);
+						blockedUserService.blockUser(user);						
 					} catch (NotAllowedException e) {
 						log.warn(e);
 					} catch (BadRequestException e) {

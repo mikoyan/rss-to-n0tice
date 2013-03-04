@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
-import com.n0tice.api.client.exceptions.HttpFetchException;
-import com.n0tice.api.client.exceptions.NotFoundException;
-import com.n0tice.api.client.exceptions.ParsingException;
+import com.n0tice.api.client.exceptions.N0ticeException;
 import com.n0tice.rsston0tice.api.N0ticeApiFactory;
 import com.n0tice.rsston0tice.daos.FeedDAO;
 import com.n0tice.rsston0tice.feeds.FeedService;
@@ -222,11 +220,7 @@ public class FeedsController {
 	private void populateUsersNoticeboardList(ModelAndView mv) {
 		try {
 			mv.addObject("noticeboards", n0ticeApiFactory.getReadOnlyApi().noticeboards(loggedInUserFilter.getLoggedInUser()));
-		} catch (NotFoundException e) {
-			log.error(e);
-		} catch (ParsingException e) {
-			log.error(e);
-		} catch (HttpFetchException e) {
+		} catch (N0ticeException e) {
 			log.error(e);
 		}
 	}
